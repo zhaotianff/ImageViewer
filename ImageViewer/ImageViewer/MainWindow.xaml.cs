@@ -64,6 +64,14 @@ namespace ImageViewer
             return writeableBitmap;
         }
 
+        private byte[] ConvertTo8BitImage(int bit,byte[] rawPixelData)
+        {
+            if (bit <= 8)
+                return rawPixelData;
+
+            return new byte[1];
+        }
+
         private ImageSource GetImageSource(string fileName)
         {
             var writeableBitmap = GetWriteableBitmap(fileName);
