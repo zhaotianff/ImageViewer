@@ -7,6 +7,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
+            <MenuItem Header="文件">
+                <MenuItem Header="打开" Click="Open"/>
+                <MenuItem Header="退出" Click="Exit"/>
+            </MenuItem>
+        </Menu>
+
+        <Image Name="image" Stretch="Uniform" Grid.Row="1"/>
     </Grid>
 </Window>
