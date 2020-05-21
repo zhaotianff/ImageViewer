@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer"
+        xmlns:ctrl="clr-namespace:ImageViewCtrl;assembly=ImageViewCtrl"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -19,6 +20,6 @@
             </MenuItem>
         </Menu>
 
-        <Image Name="image" Stretch="Uniform" Grid.Row="1"/>
+        <ctrl:flyff x:Name="imgview" Grid.Row="1"/>
     </Grid>
 </Window>

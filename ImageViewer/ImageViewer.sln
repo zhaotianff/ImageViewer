@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewer", "ImageViewer\ImageViewer.csproj", "{355C3FCF-DC85-42A7-A462-5296348F1347}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewCtrl", "ImageViewCtrl\ImageViewCtrl.csproj", "{EF16C295-CD01-4DBA-86C7-5127A382DCE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{355C3FCF-DC85-42A7-A462-5296348F1347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{355C3FCF-DC85-42A7-A462-5296348F1347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{355C3FCF-DC85-42A7-A462-5296348F1347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF16C295-CD01-4DBA-86C7-5127A382DCE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF16C295-CD01-4DBA-86C7-5127A382DCE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF16C295-CD01-4DBA-86C7-5127A382DCE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF16C295-CD01-4DBA-86C7-5127A382DCE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
