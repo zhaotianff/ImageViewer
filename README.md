@@ -1,7 +1,7 @@
 # ImageViewer
 Dicom Image Viewer
 
-The medical image display control developed by wpf only uses fo-dicom and does not include other three-party components
+Medical image display software
 
 ## Screenshots
 
