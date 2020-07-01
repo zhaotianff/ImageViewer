@@ -30,7 +30,9 @@ namespace ImageViewCtrl
         private int height;
         private int bits;
         private double ww;
-        private double wl;            
+        private double wl;
+
+        public bool HasImage { get; set; } = false;
 
         public flyff()
         {
@@ -56,6 +58,8 @@ namespace ImageViewCtrl
                 this.ww = image.WindowWidth;
                 this.wl = image.WindowCenter;
 
+                SetWindowInfo(ww, wl);
+
                 if(bits > 8)
                 {
                     raw16BitBuffer = new byte[width * height * 2];
@@ -71,12 +75,57 @@ namespace ImageViewCtrl
                 var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
 
                 this.image.Source = imageSource;
+                HasImage = true;
                 return true;
             }
             catch
             {
                 return false;
             }
-        }      
+        } 
+        
+        public bool CloseImage()
+        {
+            try
+            {
+                this.image.Source = null;
+                HasImage = false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void SetWindowInfo(double ww,double wl)
+        {
+            this.lbl_WL.Content = $"WL:{wl}";
+            this.lbl_WW.Content = $"WW:{ww}";
+        }
+        
+        public void ShowWindowInfo()
+        {
+            stackpanel_Window.Visibility = Visibility.Visible;
+        }
+
+        public void HideWindowInfo()
+        {
+            stackpanel_Window.Visibility = Visibility.Hidden;
+        }
+
+        private void ZoomImage(Point point, int delta)
+        {
+            if (delta != 0)
+            {
+                
+            }
+        }
+
+
+        private void Border_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            
+        }
     }
 }
