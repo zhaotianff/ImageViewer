@@ -16,9 +16,10 @@ Medical image display control,support dicom/raw image.
 # Features
 * Support dicom/raw files
 * Windows Width/window Level display
+* Zoom Out/In
 
 ## Roadmap
-* Zoom
+
 * SetWindow
 * Text tool
 * Annotation
