@@ -33,6 +33,7 @@ namespace ImageViewCtrl
         private double wl;
 
         public bool HasImage { get; set; } = false;
+        private Point LastZoomPoint { get; set; }
 
         public flyff()
         {
@@ -75,7 +76,9 @@ namespace ImageViewCtrl
                 var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
 
                 this.image.Source = imageSource;
+
                 HasImage = true;
+                ResetZoomPoint();
                 return true;
             }
             catch
@@ -116,16 +119,78 @@ namespace ImageViewCtrl
 
         private void ZoomImage(Point point, int delta)
         {
+            if (delta < 0 && scaleTransform.ScaleX < 0.2)
+                return;
+
+            if (delta > 0 && scaleTransform.ScaleX > 3)
+                return;
+
             if (delta != 0)
             {
-                
+                var ratio = 0.0;
+                if (delta > 0)
+                {
+                    ratio = scaleTransform.ScaleX * 0.2;
+                }
+                else
+                {
+                    ratio = scaleTransform.ScaleX * -0.2;
+    
+                }
+                scaleTransform.CenterX = this.image.ActualWidth / 2.0;
+                scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+
+                //TODO use animation
+                scaleTransform.ScaleX += ratio;
+                scaleTransform.ScaleY = Math.Abs(scaleTransform.ScaleX);       
             }
         }
 
-
         private void Border_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            
+            ZoomImage(e.GetPosition(this.image), e.Delta);
+        }
+
+        private void Border_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.RightButton == MouseButtonState.Pressed)
+            {
+                var point = e.GetPosition(this.image);
+
+                if (LastZoomPoint.X == 0 && LastZoomPoint.Y == 0)
+                {
+                    LastZoomPoint = point;
+                    return;
+                }
+
+                var xPos = point.X - LastZoomPoint.X;
+                var yPos = point.Y - LastZoomPoint.Y;
+
+                //TODO fix direction
+                //use direction to determine zoom in/out
+
+                if( (xPos > 20  && yPos > 20) || (xPos < 20 && yPos > 20) )
+                {
+                    ZoomImage(point, -110);
+                    LastZoomPoint = point;
+                }
+
+                if((xPos > 20 && yPos < 20) || (xPos < 20 && yPos < 20))
+                {
+                    ZoomImage(point, 110);
+                    LastZoomPoint = point;
+                }
+            }
+        }
+
+        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ResetZoomPoint();
+        }
+
+        private void ResetZoomPoint()
+        {
+            LastZoomPoint = new Point();
         }
     }
 }
