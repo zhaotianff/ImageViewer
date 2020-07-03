@@ -24,6 +24,10 @@ namespace ImageViewCtrl
     /// </summary>
     public partial class flyff : UserControl
     {
+        private const float MIN_ZOOMRATIO = 0.2f;
+        private const float MAX_ZOOMRATIO = 3f;
+        private const float ZOOM_STEP = 0.2f;
+
         private byte[] raw8BitBuffer;
         private byte[] raw16BitBuffer;
         private int width;
@@ -31,6 +35,8 @@ namespace ImageViewCtrl
         private int bits;
         private double ww;
         private double wl;
+
+        private float currentRatio = 1.0f;
 
         public bool HasImage { get; set; } = false;
         private Point LastZoomPoint { get; set; }
@@ -119,31 +125,31 @@ namespace ImageViewCtrl
 
         private void ZoomImage(Point point, int delta)
         {
-            if (delta < 0 && scaleTransform.ScaleX < 0.2)
+            if (delta == 0)
                 return;
 
-            if (delta > 0 && scaleTransform.ScaleX > 3)
+            if (delta < 0 && scaleTransform.ScaleX < MIN_ZOOMRATIO)
                 return;
 
-            if (delta != 0)
+            if (delta > 0 && scaleTransform.ScaleX > MAX_ZOOMRATIO)
+                return;
+                   
+            var ratio = 0.0;
+            if (delta > 0)
             {
-                var ratio = 0.0;
-                if (delta > 0)
-                {
-                    ratio = scaleTransform.ScaleX * 0.2;
-                }
-                else
-                {
-                    ratio = scaleTransform.ScaleX * -0.2;
-    
-                }
-                scaleTransform.CenterX = this.image.ActualWidth / 2.0;
-                scaleTransform.CenterY = this.image.ActualHeight / 2.0;
-
-                //TODO use animation
-                scaleTransform.ScaleX += ratio;
-                scaleTransform.ScaleY = Math.Abs(scaleTransform.ScaleX);       
+                ratio = scaleTransform.ScaleX * ZOOM_STEP;
             }
+            else
+            {
+                ratio = scaleTransform.ScaleX * -ZOOM_STEP;
+    
+            }
+            scaleTransform.CenterX = this.image.ActualWidth / 2.0;
+            scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+
+            //TODO use animation
+            scaleTransform.ScaleX += ratio;
+            scaleTransform.ScaleY = Math.Abs(scaleTransform.ScaleX);                
         }
 
         private void Border_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -166,21 +172,36 @@ namespace ImageViewCtrl
                 var xPos = point.X - LastZoomPoint.X;
                 var yPos = point.Y - LastZoomPoint.Y;
 
-                //TODO fix direction
-                //use direction to determine zoom in/out
+                if (Math.Abs(xPos) < 10 && Math.Abs(yPos) < 10)
+                    return;
 
-                if( (xPos > 20  && yPos > 20) || (xPos < 20 && yPos > 20) )
-                {
-                    ZoomImage(point, -110);
-                    LastZoomPoint = point;
-                }
+                //Hit test
 
-                if((xPos > 20 && yPos < 20) || (xPos < 20 && yPos < 20))
-                {
-                    ZoomImage(point, 110);
-                    LastZoomPoint = point;
-                }
+                var ratio = currentRatio;
+                if (xPos < 0)
+                    ratio *= 1.1f;
+                else
+                    ratio *= 0.9f;
+
+                LimitRatio(ref ratio);
+
+                scaleTransform.CenterX = this.image.ActualWidth / 2.0;
+                scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+
+                scaleTransform.ScaleX *= ratio / currentRatio;
+                scaleTransform.ScaleY *= ratio / currentRatio;
+
+                currentRatio = ratio;
+                LastZoomPoint = point;
             }
+        }
+
+        private void LimitRatio(ref float ratio)
+        {
+            if (ratio > MAX_ZOOMRATIO)
+                ratio = MAX_ZOOMRATIO;
+            else if(ratio < MIN_ZOOMRATIO)
+                ratio = MIN_ZOOMRATIO;
         }
 
         private void Border_MouseUp(object sender, MouseButtonEventArgs e)
