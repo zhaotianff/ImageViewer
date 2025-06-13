@@ -60,6 +60,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dicom\Data\DicomImage.cs" />
     <Compile Include="flyff.xaml.cs">
       <DependentUpon>flyff.xaml</DependentUpon>
     </Compile>
