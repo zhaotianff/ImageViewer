@@ -12,22 +12,69 @@ namespace ImageViewCtrl.Util
 {
     public class ConvertUtil
     {
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        private unsafe static extern int memcpy(void* pDst, void* pSrc, int count);
+
+
         public static byte[] ConvertTo8BitImage(byte[] source)
         {
             return source;
         }
 
-        public static WriteableBitmap GetWriteableBitmap(byte[] buffer,int width,int height,int bit)
+        public static WriteableBitmap GetWriteableBitmap(byte[] buffer,int width,int height,int bits)
         {
-            var pixelFormat = bit > 8 ? PixelFormats.Gray16 : PixelFormats.Gray8;
-            var size = bit > 8 ? width * height * 2 : width * height;
-            WriteableBitmap writeableBitmap = new WriteableBitmap(width, height, 96.0, 96.0, pixelFormat, BitmapPalettes.BlackAndWhite);;
+            if (bits > 8)
+            {
+                buffer = Convert16BitTo8Bit(buffer);
+            }
+
+            var size = width * height;
+            var pixelFormat = PixelFormats.Gray8;
+            WriteableBitmap writeableBitmap = new WriteableBitmap(width, height, 96.0, 96.0, pixelFormat, BitmapPalettes.BlackAndWhite);
             writeableBitmap.Lock();
             Marshal.Copy(buffer, 0, writeableBitmap.BackBuffer, size);
             Int32Rect int32Rect = new Int32Rect(0, 0, width, height);
             writeableBitmap.AddDirtyRect(int32Rect);
             writeableBitmap.Unlock();
             return writeableBitmap;
+        }
+
+        public static byte[] Convert16BitTo8Bit(byte[] byteArray16Bit)
+        {
+            ushort[] target8BitArray = new ushort[byteArray16Bit.Length / 2];
+            //CopyByteArrayToUshortArrayUnsafe(byteArray16Bit, target8BitArray);
+            CopyByteArrayToUshortArray(byteArray16Bit, target8BitArray);
+            return target8BitArray.Select(x => (byte)x).ToArray();
+        }
+
+        public unsafe static bool CopyByteArrayToUshortArrayUnsafe(byte[] srcData, ushort[] dstData)
+        {
+            try
+            {
+                fixed (void* ptr = (&dstData[0]))
+                {
+                    fixed (void* ptr2 = (&srcData[0]))
+                    {
+                        memcpy(ptr, ptr2, srcData.Length);
+                    } 
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool CopyByteArrayToUshortArray(byte[] srcData, ushort[] dstData)
+        {
+            for (int i = 0; i < srcData.Length; i += 2)
+            {
+                //小端序
+                dstData[i / 2] = (ushort)(srcData[i] | (srcData[i + 1] << 8));
+            }
+            return true;
         }
 
         public static ImageSource GetImageSource(WriteableBitmap writeableBitmap)
@@ -38,45 +85,5 @@ namespace ImageViewCtrl.Util
             bitmap.EndInit();
             return bitmap;
         }
-
-        /*
-         * private WriteableBitmap GetWriteableBitmap(string fileName)
-        {
-            var image = new DicomImage(fileName);
-
-            //I need get raw data here
-#pragma warning disable CS0618
-            byte[] rawPixelData = image.PixelData.GetFrame(0).Data;
-
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image.Width, image.Height, 96.0, 96.0, PixelFormats.Gray8, BitmapPalettes.BlackAndWhite);
-
-            //todo I should convert 12/16 bit image to 8-bit           
-            var bits = image.Dataset.Get<int>(DicomTag.BitsAllocated);
-
-            raw8BitBuffer = new byte[image.Width * image.Height];
-
-            if (bits > 8)
-            {
-                rawPixelData = ConvertUtil.ConvertTo8BitImage(rawPixelData);
-            }
-            Array.Copy(rawPixelData, raw8BitBuffer, image.Width * image.Height);
-
-            writeableBitmap.Lock();
-            Marshal.Copy(raw8BitBuffer, 0, writeableBitmap.BackBuffer, image.Width * image.Height);
-            Int32Rect int32Rect = new Int32Rect(0, 0, image.Width, image.Height);
-            writeableBitmap.AddDirtyRect(int32Rect);
-            writeableBitmap.Unlock();
-            return writeableBitmap;
-        }
-
-        private ImageSource GetImageSource(string fileName)
-        {
-            var writeableBitmap = GetWriteableBitmap(fileName);
-            TransformedBitmap bitmap = new TransformedBitmap();
-            bitmap.BeginInit();
-            bitmap.Source = writeableBitmap;
-            bitmap.EndInit();
-            return bitmap;
-        }*/
     }
 }

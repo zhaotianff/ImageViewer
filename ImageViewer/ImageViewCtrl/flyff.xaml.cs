@@ -28,15 +28,9 @@ namespace ImageViewCtrl
         private const float MAX_ZOOMRATIO = 3f;
         private const float ZOOM_STEP = 0.2f;
 
-        private byte[] raw8BitBuffer;
-        private byte[] raw16BitBuffer;
-        private int width;
-        private int height;
-        private int bits;
-        private double ww;
-        private double wl;
-
         private float currentRatio = 1.0f;
+
+        private Dicom.Data.DicomFile dicomFile;
 
         public bool HasImage { get; set; } = false;
         private Point LastZoomPoint { get; set; }
@@ -51,48 +45,17 @@ namespace ImageViewCtrl
         /// </summary>
         /// <param name="dicmFile"></param>
         /// <returns></returns>
-        public bool OpenImage(string dicomFile)
+        public bool OpenImage(string dicomFilePath)
         {
-            try
-            {
-                var image = new DicomImage(dicomFile);
-#pragma warning disable CS0618
-                var pixelData = image.PixelData.GetFrame(0).Data;
+            dicomFile = new Dicom.Data.DicomFile(dicomFilePath);
+            dicomFile.OpenAsDicomFile(0);
+            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            this.image.Source = dicomFile.PreviewImage;
+            HasImage = true;
+            ResetZoomPoint();
+            return true;
+        }
 
-                this.bits = image.Dataset.Get<int>(DicomTag.BitsStored);
-                this.width = image.Width;
-                this.height = image.Height;
-                this.ww = image.WindowWidth;
-                this.wl = image.WindowCenter;
-
-                SetWindowInfo(ww, wl);
-
-                if(bits > 8)
-                {
-                    raw16BitBuffer = new byte[width * height * 2];
-                    Array.Copy(pixelData, raw16BitBuffer, pixelData.Length);                    
-                }
-                else
-                {
-                    raw8BitBuffer = new byte[width * height];
-                    Array.Copy(pixelData, raw8BitBuffer, pixelData.Length);
-                }
-
-                var writeableBitmap = ConvertUtil.GetWriteableBitmap(pixelData, this.width, this.height, this.bits);
-                var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
-
-                this.image.Source = imageSource;
-
-                HasImage = true;
-                ResetZoomPoint();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        } 
-        
         public bool CloseImage()
         {
             try
