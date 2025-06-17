@@ -14,17 +14,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
+using System.Windows.Interop;
+using ImageViewer.Util;
+using ImageViewer.Views.Dialog;
 
 namespace ImageViewer
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Controls.CustomWindow
     {
-        private byte[] raw8BitBuffer;
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -46,5 +46,20 @@ namespace ImageViewer
             }
         }
 
+        private void Open_Raw(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Raw Files|*.raw;*.RAW|All files|*.*";
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                InputImageSizeWindow inputImageSizeWindow = new InputImageSizeWindow();
+                if(inputImageSizeWindow.ShowDialog() == true)
+                {
+                    imgview.OpenRaw(openFileDialog.FileName, inputImageSizeWindow.ImageWidth, inputImageSizeWindow.ImageHeight, inputImageSizeWindow.ImageBits);
+                }
+                
+            }
+        }
     }
 }

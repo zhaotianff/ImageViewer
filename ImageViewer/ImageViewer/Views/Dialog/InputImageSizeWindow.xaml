@@ -1,0 +1,43 @@
+﻿<controls:CustomWindow x:Class="ImageViewer.Views.Dialog.InputImageSizeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
+        xmlns:controls="clr-namespace:ImageViewer.Controls"
+        mc:Ignorable="d"
+        Title="FF Dicom Viewer" Height="190" Width="320" Icon="../../dicom.png" ResizeMode="NoResize" Foreground="White" WindowStartupLocation="CenterScreen"
+                       BorderBrush="White" BorderThickness="1">
+    <controls:CustomWindow.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </controls:CustomWindow.Resources>
+    <StackPanel>
+        <DockPanel Width="150" HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Label Content="宽度"></Label>
+            <TextBox Margin="10,0,0,0" VerticalContentAlignment="Center" Name="tbox_Width"></TextBox>
+        </DockPanel>
+        <DockPanel Width="150" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="高度"></Label>
+            <TextBox Margin="10,0,0,0" VerticalContentAlignment="Center" Name="tbox_Height"></TextBox>
+        </DockPanel>
+        <DockPanel Width="150" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="位数"></Label>
+            <ComboBox Margin="10,0,0,0" VerticalContentAlignment="Center" Name="cbx_Bits" SelectedIndex="0">
+                <ComboBoxItem>8位</ComboBoxItem>
+                <ComboBoxItem>12/16位</ComboBoxItem>
+            </ComboBox>
+        </DockPanel>
+
+        <Grid Width="200" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="确认" Margin="20,0" Click="confirm_Click" IsDefault="True"></Button>
+            <Button Content="取消" Grid.Column="1" Margin="20,0" Click="cancel_Click" IsCancel="True"></Button>
+        </Grid>
+    </StackPanel>
+</controls:CustomWindow>

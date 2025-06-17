@@ -56,6 +56,17 @@ namespace ImageViewCtrl
             return true;
         }
 
+        public bool OpenRaw(string rawFilePath,int width,int height,int bits)
+        {
+            dicomFile = new Dicom.Data.DicomFile(rawFilePath);
+            dicomFile.OpenAsRawFile(width, height, bits);
+            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            this.image.Source = dicomFile.PreviewImage;
+            HasImage = true;
+            ResetZoomPoint();
+            return true;
+        }
+
         public bool CloseImage()
         {
             try

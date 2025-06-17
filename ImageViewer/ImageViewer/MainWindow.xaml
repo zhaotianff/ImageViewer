@@ -1,25 +1,29 @@
-﻿<Window x:Class="ImageViewer.MainWindow"
+﻿<localcontrols:CustomWindow x:Class="ImageViewer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:ctrl="clr-namespace:ImageViewCtrl;assembly=ImageViewCtrl"
+        xmlns:localcontrols="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Icon="../dicom.png">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" ItemContainerStyle="{StaticResource MenuItemStyle}" Background="Black" BorderThickness="0.5" BorderBrush="Silver">
             <MenuItem Header="文件">
-                <MenuItem Header="打开" Click="Open"/>
+                <MenuItem Header="打开Dicom" Click="Open"/>
+                <MenuItem Header="打开Raw" Click="Open_Raw"/>
                 <MenuItem Header="退出" Click="Exit"/>
             </MenuItem>
         </Menu>
 
-        <ctrl:flyff x:Name="imgview" Grid.Row="1"/>
+        <Grid Grid.Row="1">
+            <ctrl:flyff x:Name="imgview"/>
+        </Grid>
     </Grid>
-</Window>
+</localcontrols:CustomWindow>

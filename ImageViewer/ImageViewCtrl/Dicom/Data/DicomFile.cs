@@ -108,6 +108,7 @@ namespace ImageViewCtrl.Dicom.Data
                 WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows,this.BitsStored);
                 var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
                 this.PreviewImage = imageSource;
+                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, 256, 256);
             }
             catch(Exception ex)
             {
@@ -126,6 +127,10 @@ namespace ImageViewCtrl.Dicom.Data
             {
                 this.BytePerPixel = 2;
             }
+            else
+            {
+                this.BytePerPixel = 1;
+            }
 
             var buffer = System.IO.File.ReadAllBytes(rawFile);
 
@@ -133,11 +138,9 @@ namespace ImageViewCtrl.Dicom.Data
                 throw new Exception("Raw format error!");
 
             WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(buffer, this.Columns, this.Rows, this.BitsStored);
-
-           
             var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
-
             this.PreviewImage = imageSource;
+            this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, 256, 256);
         }
 
         public static ushort[] ConvertRaw12BitBytesToUshortArray(byte[] rawData)

@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dicom\Data\DicomFile.cs" />
+    <Compile Include="Dicom\Process\DicomImageProcessor.cs" />
     <Compile Include="flyff.xaml.cs">
       <DependentUpon>flyff.xaml</DependentUpon>
     </Compile>
