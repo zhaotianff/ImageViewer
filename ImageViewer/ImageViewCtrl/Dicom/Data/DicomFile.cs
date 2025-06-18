@@ -15,6 +15,8 @@ namespace ImageViewCtrl.Dicom.Data
 {
     public class DicomFile
     {
+        private static readonly string[] SupportedPhotometricInterpretation = { "MONOCHROME2" };
+
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public int BitsStored { get; private set; }
@@ -85,6 +87,11 @@ namespace ImageViewCtrl.Dicom.Data
             {
                 var dicomImage = new DicomImage(dicomFile);
 #pragma warning disable CS0618
+
+                var photometricInterpretation = dicomImage.Dataset.Get<string>(DicomTag.PhotometricInterpretation);
+                if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
+                    throw new Exception("Not supported PhotometricInterpretation");
+
                 this.BitsStored = dicomImage.Dataset.Get<int>(DicomTag.BitsStored);
                 this.Columns = dicomImage.Width;
                 this.Rows = dicomImage.Height;
@@ -114,6 +121,15 @@ namespace ImageViewCtrl.Dicom.Data
             {
                 throw ex;
             }
+        }
+
+        private byte[] ReadFrameDataFromPixelDataTag(DicomImage dicomImage, int frameIndex)
+        {
+            var byteFragment = dicomImage.Dataset.Get<DicomOtherByteFragment>(DicomTag.PixelData);
+            if (byteFragment != null && byteFragment.Count() > 0)
+                return byteFragment.ElementAt(frameIndex).Data;
+
+            return null;
         }
 
         private void OpenRawFile(string rawFile,int width,int height,int bits)
