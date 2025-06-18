@@ -39,7 +39,7 @@ namespace ImageViewer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Dicom Files|*.dcm";
-            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            
             if (openFileDialog.ShowDialog() == true)
             {
                 imgview.OpenImage(openFileDialog.FileName);

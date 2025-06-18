@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageViewCtrl.Util
+namespace DicomViewCtrl.Util
 {
     public class WinAPI
     {

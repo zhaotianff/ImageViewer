@@ -117,13 +117,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImageViewCtrl\ImageViewCtrl.csproj">
-      <Project>{ef16c295-cd01-4dba-86c7-5127a382dce7}</Project>
-      <Name>ImageViewCtrl</Name>
-    </ProjectReference>
+    <Resource Include="dicom.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="dicom.png" />
+    <ProjectReference Include="..\DicomViewCtrl\DicomViewCtrl.csproj">
+      <Project>{ef16c295-cd01-4dba-86c7-5127a382dce7}</Project>
+      <Name>DicomViewCtrl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

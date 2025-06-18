@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1062
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewer", "ImageViewer\ImageViewer.csproj", "{355C3FCF-DC85-42A7-A462-5296348F1347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageViewCtrl", "ImageViewCtrl\ImageViewCtrl.csproj", "{EF16C295-CD01-4DBA-86C7-5127A382DCE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DicomViewCtrl", "DicomViewCtrl\DicomViewCtrl.csproj", "{EF16C295-CD01-4DBA-86C7-5127A382DCE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 ﻿using Dicom;
 using Dicom.Imaging;
-using ImageViewCtrl.Util;
+using DicomViewCtrl.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ImageViewCtrl
+namespace DicomViewCtrl
 {
     /// <summary>
     /// flyff.xaml 的交互逻辑

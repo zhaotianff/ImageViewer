@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using ImageViewCtrl.Util;
+using DicomViewCtrl.Util;
 using System.Windows.Media;
 using System.Data;
 using System.Windows.Media.Imaging;
@@ -14,7 +14,7 @@ using FellowOakDicom.Imaging.NativeCodec;
 using FellowOakDicom.Imaging.Render;
 using FellowOakDicom.Imaging.Codec;
 
-namespace ImageViewCtrl.Dicom.Data
+namespace DicomViewCtrl.Dicom.Data
 {
     public class DicomFile
     {

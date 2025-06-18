@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageViewCtrl.Dicom.Process
+namespace DicomViewCtrl.Dicom.Process
 {
     public class DicomImageProcessor
     {
