@@ -35,6 +35,10 @@ Medical image display control,support dicom/raw image.
 <img src="ImageViewer/Screenshots/2.png">
 </p>
 
+<p align="center">
+<img src="ImageViewer/Screenshots/3.png">
+</p>
+
 # Features
 * Support dicom/raw files
 * Windows Width/window Level display

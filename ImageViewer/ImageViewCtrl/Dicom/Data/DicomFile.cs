@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using Dicom.Imaging;
-using Dicom;
 using ImageViewCtrl.Util;
 using System.Windows.Media;
 using System.Data;
-using Dicom.Imaging.Render;
 using System.Windows.Media.Imaging;
+using FellowOakDicom;
+using FellowOakDicom.Imaging;
+using FellowOakDicom.Imaging.NativeCodec;
+using FellowOakDicom.Imaging.Render;
+using FellowOakDicom.Imaging.Codec;
+
 namespace ImageViewCtrl.Dicom.Data
 {
     public class DicomFile
@@ -59,6 +62,14 @@ namespace ImageViewCtrl.Dicom.Data
             }
         }
 
+        static DicomFile()
+        {
+            new FellowOakDicom.DicomSetupBuilder().
+                RegisterServices(s => s.AddFellowOakDicom().
+                AddTranscoderManager<FellowOakDicom.Imaging.NativeCodec.NativeTranscoderManager>()).
+                SkipValidation().
+                Build();
+        }
 
         public DicomFile(string filePath)
         {
@@ -81,33 +92,23 @@ namespace ImageViewCtrl.Dicom.Data
             OpenRawFile(this.FilePath, width, height, bits);
         }
 
-        private void OpenDicomFile(string dicomFile, int frameIndex = 0)
+        private void OpenDicomFile(string dicomFilePath, int frameIndex = 0)
         {
             try
             {
-                var dicomImage = new DicomImage(dicomFile);
+                FellowOakDicom.DicomFile dicomFile = FellowOakDicom.DicomFile.Open(dicomFilePath);
+                var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
 #pragma warning disable CS0618
 
-                var photometricInterpretation = dicomImage.Dataset.Get<string>(DicomTag.PhotometricInterpretation);
+                var photometricInterpretation = GetPhotometricInterpretation(dicomFile);
                 if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
                     throw new Exception("Not supported PhotometricInterpretation");
 
-                this.BitsStored = dicomImage.Dataset.Get<int>(DicomTag.BitsStored);
-                this.Columns = dicomImage.Width;
-                this.Rows = dicomImage.Height;
-                this.WindowWidth = dicomImage.WindowWidth;
-                this.WindowCenter = dicomImage.WindowCenter;
+                ReadCommandDicomTag(dicomFile);
+                var pixelData = ReadDicomPixelData(dicomFile, frameIndex);               
 
-                var pixelData = dicomImage.PixelData.GetFrame(frameIndex).Data;
-
-                if (this.BitsStored > 8)
-                {
-                    BytePerPixel = 2;
-                }
-                else
-                {
-                    BytePerPixel = 1;  
-                }
+                if (pixelData == null)
+                    throw new Exception("Pixel data is null");
 
                 ImageData = new byte[this.Rows * this.Columns * BytePerPixel];
                 Array.Copy(pixelData, this.ImageData, pixelData.Length);
@@ -123,13 +124,36 @@ namespace ImageViewCtrl.Dicom.Data
             }
         }
 
-        private byte[] ReadFrameDataFromPixelDataTag(DicomImage dicomImage, int frameIndex)
+        private byte[] ReadDicomPixelData(FellowOakDicom.DicomFile dicomFile,int frameIndex)
         {
-            var byteFragment = dicomImage.Dataset.Get<DicomOtherByteFragment>(DicomTag.PixelData);
-            if (byteFragment != null && byteFragment.Count() > 0)
-                return byteFragment.ElementAt(frameIndex).Data;
+            if (dicomFile.Dataset.InternalTransferSyntax.IsEncapsulated == false)
+                return DicomPixelData.Create(dicomFile.Dataset).GetFrame(frameIndex).Data;
 
-            return null;
+            var transcoder = new DicomTranscoder(dicomFile.Dataset.InternalTransferSyntax, DicomTransferSyntax.ExplicitVRLittleEndian);
+            var transcoded = transcoder.Transcode(dicomFile.Dataset);
+            var pixelData = DicomPixelData.Create(transcoded);
+            return pixelData.GetFrame(frameIndex).Data;
+        }
+
+        private void ReadCommandDicomTag(FellowOakDicom.DicomFile dicomFile)
+        {
+            this.BitsStored = dicomFile.Dataset.GetSingleValue<int>(DicomTag.BitsStored);
+            this.Columns = dicomFile.Dataset.GetSingleValue<int>(DicomTag.Columns);
+            this.Rows = dicomFile.Dataset.GetSingleValue<int>(DicomTag.Rows);
+            dicomFile.Dataset.TryGetValue<double>(DicomTag.WindowWidth, 0, out double ww);
+            dicomFile.Dataset.TryGetValue<double>(DicomTag.WindowCenter, 0, out double wl);
+            this.WindowWidth = ww;
+            this.WindowCenter = wl;
+
+            var samplesPerPixel = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.SamplesPerPixel, 1); // 1 for grayscale, 3 for RGB
+            var bitsAllocated = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.BitsAllocated, 8);
+
+            this.BytePerPixel = (bitsAllocated / 8) * samplesPerPixel;
+        }
+
+        public string GetPhotometricInterpretation(FellowOakDicom.DicomFile dicomFile)
+        {
+            return dicomFile.Dataset.GetSingleValue<string>(DicomTag.PhotometricInterpretation).Trim().Replace("\0","").ToUpper();
         }
 
         private void OpenRawFile(string rawFile,int width,int height,int bits)
@@ -157,23 +181,6 @@ namespace ImageViewCtrl.Dicom.Data
             var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
             this.PreviewImage = imageSource;
             this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, 256, 256);
-        }
-
-        public static ushort[] ConvertRaw12BitBytesToUshortArray(byte[] rawData)
-        {
-            if (rawData.Length % 2 != 0)
-                throw new ArgumentException("Raw byte array length must be even for 16-bit words.");
-
-            int pixelCount = rawData.Length / 2;
-            ushort[] result = new ushort[pixelCount];
-
-            for (int i = 0; i < pixelCount; i++)
-            {
-                ushort value = (ushort)(rawData[2 * i] | (rawData[2 * i + 1] << 8));
-                result[i] = (ushort)(value & 0x0FFF);
-            }
-
-            return result;
         }
     }
 }

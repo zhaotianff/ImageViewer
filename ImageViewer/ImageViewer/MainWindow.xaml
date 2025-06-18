@@ -16,8 +16,10 @@
 
         <Menu Grid.Row="0" ItemContainerStyle="{StaticResource MenuItemStyle}" Background="Black" BorderThickness="0.5" BorderBrush="Silver">
             <MenuItem Header="文件">
-                <MenuItem Header="打开Dicom" Click="Open"/>
-                <MenuItem Header="打开Raw" Click="Open_Raw"/>
+                <MenuItem Header="打开Dicom" Click="Open_Click"/>
+                <MenuItem Header="打开Dicom文件夹" Click="OpenDicomDirectory_Click"></MenuItem>
+                <MenuItem Header="打开Raw" Click="OpenRaw_Click"/>
+                <Separator></Separator>
                 <MenuItem Header="退出" Click="Exit"/>
             </MenuItem>
         </Menu>

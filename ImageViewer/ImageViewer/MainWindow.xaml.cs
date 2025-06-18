@@ -32,21 +32,21 @@ namespace ImageViewer
 
         private void Exit(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
 
-        private void Open(object sender, RoutedEventArgs e)
+        private void Open_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Dicom Files|*.dcm";
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
-            if(openFileDialog.ShowDialog() == true)
+            if (openFileDialog.ShowDialog() == true)
             {
                 imgview.OpenImage(openFileDialog.FileName);
             }
         }
 
-        private void Open_Raw(object sender, RoutedEventArgs e)
+        private void OpenRaw_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Raw Files|*.raw;*.RAW|All files|*.*";
@@ -54,12 +54,17 @@ namespace ImageViewer
             if (openFileDialog.ShowDialog() == true)
             {
                 InputImageSizeWindow inputImageSizeWindow = new InputImageSizeWindow();
-                if(inputImageSizeWindow.ShowDialog() == true)
+                if (inputImageSizeWindow.ShowDialog() == true)
                 {
                     imgview.OpenRaw(openFileDialog.FileName, inputImageSizeWindow.ImageWidth, inputImageSizeWindow.ImageHeight, inputImageSizeWindow.ImageBits);
                 }
-                
+
             }
+        }
+
+        private void OpenDicomDirectory_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
