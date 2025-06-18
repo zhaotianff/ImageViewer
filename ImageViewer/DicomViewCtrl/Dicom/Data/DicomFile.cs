@@ -16,7 +16,7 @@ using FellowOakDicom.Imaging.Codec;
 
 namespace DicomViewCtrl.Dicom.Data
 {
-    public class DicomFile
+    internal class DicomFile
     {
         private static readonly string[] SupportedPhotometricInterpretation = { "MONOCHROME2" };
 
@@ -36,6 +36,10 @@ namespace DicomViewCtrl.Dicom.Data
         public double WindowWidth { get; private set; }
         
         public double WindowCenter { get; private set; }
+
+        public string Title { get; private set; }
+
+        public string SopUID { get; private set; }
 
         public bool IsRawFormat { get; private set; }
 
@@ -104,7 +108,7 @@ namespace DicomViewCtrl.Dicom.Data
                 if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
                     throw new Exception("Not supported PhotometricInterpretation");
 
-                ReadCommandDicomTag(dicomFile);
+                ReadCommonDicomTag(dicomFile);
                 var pixelData = ReadDicomPixelData(dicomFile, frameIndex);               
 
                 if (pixelData == null)
@@ -135,7 +139,7 @@ namespace DicomViewCtrl.Dicom.Data
             return pixelData.GetFrame(frameIndex).Data;
         }
 
-        private void ReadCommandDicomTag(FellowOakDicom.DicomFile dicomFile)
+        private void ReadCommonDicomTag(FellowOakDicom.DicomFile dicomFile)
         {
             this.BitsStored = dicomFile.Dataset.GetSingleValue<int>(DicomTag.BitsStored);
             this.Columns = dicomFile.Dataset.GetSingleValue<int>(DicomTag.Columns);
@@ -144,6 +148,9 @@ namespace DicomViewCtrl.Dicom.Data
             dicomFile.Dataset.TryGetValue<double>(DicomTag.WindowCenter, 0, out double wl);
             this.WindowWidth = ww;
             this.WindowCenter = wl;
+            dicomFile.Dataset.TryGetValue<string>(DicomTag.StudyDescription, 0,out string title);
+            this.Title = title;
+            this.SopUID = dicomFile.Dataset.GetValue<string>(DicomTag.SOPInstanceUID,0);
 
             var samplesPerPixel = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.SamplesPerPixel, 1); // 1 for grayscale, 3 for RGB
             var bitsAllocated = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.BitsAllocated, 8);

@@ -1,8 +1,9 @@
-﻿using Dicom;
-using Dicom.Imaging;
+﻿using DicomViewCtrl.Dicom.Data;
 using DicomViewCtrl.Util;
+using DicomViewCtrl.Viewer.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -32,6 +33,8 @@ namespace DicomViewCtrl
 
         private Dicom.Data.DicomFile dicomFile;
 
+        public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
+
         public bool HasImage { get; set; } = false;
         private Point LastZoomPoint { get; set; }
 
@@ -47,24 +50,55 @@ namespace DicomViewCtrl
         /// <returns></returns>
         public bool OpenImage(string dicomFilePath)
         {
-            dicomFile = new Dicom.Data.DicomFile(dicomFilePath);
+            dicomFile = new DicomFile(dicomFilePath);
             dicomFile.OpenAsDicomFile(0);
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             HasImage = true;
             ResetZoomPoint();
+            AddToImageList(dicomFile);
             return true;
         }
 
         public bool OpenRaw(string rawFilePath,int width,int height,int bits)
         {
-            dicomFile = new Dicom.Data.DicomFile(rawFilePath);
+            dicomFile = new DicomFile(rawFilePath);
             dicomFile.OpenAsRawFile(width, height, bits);
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             HasImage = true;
             ResetZoomPoint();
+            AddToImageList(dicomFile);
             return true;
+        }
+
+        private void AddToImageList(DicomFile dicomFile)
+        {
+            if (this.ImageList.FirstOrDefault(x => x.SopUID == dicomFile.SopUID) != null)
+                return;
+
+            DicomImage dicomImage = new DicomImage();
+            dicomImage.FilePath = dicomFile.FilePath;
+            dicomImage.IsRaw = dicomFile.IsRawFormat;
+            dicomImage.Thumbnail = dicomFile.ThumbnailImage;
+            dicomImage.Width = dicomFile.Columns;
+            dicomImage.Height = dicomFile.Rows;
+            dicomImage.Bits = dicomFile.BitsStored;
+            dicomImage.Title = dicomFile.Title ?? "No description";
+            dicomImage.SopUID = dicomFile.SopUID;
+
+            this.ImageList.Add(dicomImage);
+        }
+
+
+        public void PutImage(byte[] imageData, int width, int height, int bits)
+        {
+            int bytePerPixel = bits > 8 ? 2 : 1;
+
+            if (imageData.Length != (width * height * bytePerPixel))
+                throw new Exception("Image data error!");
+
+
         }
 
         public bool CloseImage()

@@ -130,7 +130,7 @@
   <ItemGroup>
     <Compile Include="Dicom\Data\DicomFile.cs" />
     <Compile Include="Dicom\Process\DicomImageProcessor.cs" />
-    <Compile Include="flyff.xaml.cs">
+    <Compile Include="Viewer\Controls\flyff.xaml.cs">
       <DependentUpon>flyff.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -148,6 +148,7 @@
     </Compile>
     <Compile Include="Util\ConvertUtil.cs" />
     <Compile Include="Util\WinAPI.cs" />
+    <Compile Include="Viewer\Data\DicomImage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -160,7 +161,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="flyff.xaml">
+    <Page Include="Viewer\Controls\flyff.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

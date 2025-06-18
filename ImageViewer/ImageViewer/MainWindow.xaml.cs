@@ -28,6 +28,8 @@ namespace ImageViewer
         public MainWindow()
         {
             InitializeComponent();
+
+            this.list_ImageList.ItemsSource = imgview.ImageList;
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -65,6 +67,23 @@ namespace ImageViewer
         private void OpenDicomDirectory_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void list_ImageList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.list_ImageList.SelectedIndex == -1)
+                return;
+
+            var selectedImage = this.imgview.ImageList[this.list_ImageList.SelectedIndex];
+
+            if(selectedImage.IsRaw == true)
+            {
+                this.imgview.OpenRaw(selectedImage.FilePath, selectedImage.Width, selectedImage.Height, selectedImage.Bits);
+            }
+            else
+            {
+                this.imgview.OpenImage(selectedImage.FilePath);
+            }
         }
     }
 }

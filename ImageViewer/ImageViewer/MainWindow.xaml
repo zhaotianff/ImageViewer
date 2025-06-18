@@ -24,8 +24,28 @@
             </MenuItem>
         </Menu>
 
-        <Grid Grid.Row="1">
-            <ctrl:flyff x:Name="imgview"/>
+        <Grid Grid.Row="1" Background="Black">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox Grid.Column="0" Background="Transparent" Name="list_ImageList" SelectionChanged="list_ImageList_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Content="{Binding Title}" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"></Label>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ctrl:flyff x:Name="imgview" Grid.Column="1"/>
         </Grid>
     </Grid>
 </localcontrols:CustomWindow>
