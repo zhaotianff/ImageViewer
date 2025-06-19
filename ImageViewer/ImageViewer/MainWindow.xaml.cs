@@ -85,5 +85,18 @@ namespace ImageViewer
                 this.imgview.OpenImage(selectedImage.FilePath);
             }
         }
+
+        private void list_FrameList_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is ListBox listBox)
+            {
+                var scrollViewer = TreeHelper.FindVisualChild<ScrollViewer>(listBox);
+                if (scrollViewer != null)
+                {
+                    scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

@@ -105,6 +105,7 @@
 
     <Style TargetType="{x:Type controls:CustomWindow}">
         <Setter Property="Background" Value="Black"></Setter>
+        <Setter Property="Icon" Value="../dicom.png"></Setter>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome CornerRadius="0"  GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />

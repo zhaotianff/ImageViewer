@@ -7,7 +7,7 @@
         xmlns:ctrl="clr-namespace:DicomViewCtrl;assembly=DicomViewCtrl"
         xmlns:localcontrols="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
-        Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Icon="../dicom.png">
+        Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -30,22 +30,54 @@
                 <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
 
-            <ListBox Grid.Column="0" Background="Transparent" Name="list_ImageList" SelectionChanged="list_ImageList_SelectionChanged">
+            <ListBox Grid.Column="0"  Name="list_ImageList" SelectionChanged="list_ImageList_SelectionChanged" Style="{StaticResource ListBoxStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="30"/>
-                            </Grid.RowDefinitions>
+                        <Grid Height="80">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
 
-                            <Label Content="{Binding Title}" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"></Label>
+                            <Image Source="{Binding Thumbnail}"></Image>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding Title}" 
+                                           Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}}" 
+                                           Margin="5,3"></TextBlock>
+
+                                <TextBlock  Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}}" FontWeight="Bold"
+                                            Text="{Binding PatientName}" Margin="5,3">
+                                    
+                                </TextBlock>
+                                <TextBlock  Foreground="{Binding Path=Foreground,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}}"
+                                            Text="{Binding StudyDateTime}" Margin="5,3">
+
+                                </TextBlock>
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <ctrl:flyff x:Name="imgview" Grid.Column="1"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="55"/>
+                </Grid.RowDefinitions>
+
+                <ctrl:flyff x:Name="imgview" />
+
+                <ListBox Grid.Row="1" Style="{StaticResource ListBoxStyle}" ScrollViewer.PanningMode="HorizontalOnly"  HorizontalContentAlignment="Center" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                         Name="list_FrameList" PreviewMouseWheel="list_FrameList_MouseWheel">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" Background="Transparent"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Grid>
         </Grid>
     </Grid>
 </localcontrols:CustomWindow>

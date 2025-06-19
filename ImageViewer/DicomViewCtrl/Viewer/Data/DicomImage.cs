@@ -24,6 +24,10 @@ namespace DicomViewCtrl.Viewer.Data
 
         internal string SopInstanceUID { get; set; }
 
+        public string StudyDateTime { get; internal set; }
+
+        public string PatientName { get; internal set; }
+
         private string title;
 
         public string Title

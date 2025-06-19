@@ -60,6 +60,23 @@ namespace DicomViewCtrl
             return true;
         }
 
+        /// <summary>
+        /// open and show dicom file async
+        /// </summary>
+        /// <param name="dicmFile"></param>
+        /// <returns></returns>
+        public async Task<bool> OpenImageAsync(string dicomFilePath)
+        {
+            dicomFile = new DicomFile(dicomFilePath);
+            await dicomFile.OpenAsDicomFileAsync(0);
+            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            this.image.Source = dicomFile.PreviewImage;
+            HasImage = true;
+            ResetZoomPoint();
+            AddToImageList(dicomFile);
+            return true;
+        }
+
         public bool OpenRaw(string rawFilePath,int width,int height,int bits)
         {
             dicomFile = new DicomFile(rawFilePath);
@@ -86,6 +103,8 @@ namespace DicomViewCtrl
             dicomImage.Bits = dicomFile.BitsStored;
             dicomImage.Title = dicomFile.Title ?? "No description";
             dicomImage.SopInstanceUID = dicomFile.SopInstanceUID;
+            dicomImage.StudyDateTime = dicomFile.StudyDate + " " + dicomFile.StudyTime;
+            dicomImage.PatientName = dicomFile.PatientName;
 
             this.ImageList.Add(dicomImage);
         }

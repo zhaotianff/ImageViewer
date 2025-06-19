@@ -20,6 +20,9 @@ namespace DicomViewCtrl.Dicom.Data
     {
         private static readonly string[] SupportedPhotometricInterpretation = { "MONOCHROME2" };
 
+        private const int ThumbnailWidth = 48;
+        private const int ThumbnailHeight = 48;
+
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public int BitsStored { get; private set; }
@@ -40,6 +43,12 @@ namespace DicomViewCtrl.Dicom.Data
         public string Title { get; private set; }
 
         public string SopInstanceUID { get; private set; }
+
+        public string PatientName { get; private set; }
+
+        public string StudyDate { get; private set; }
+
+        public string StudyTime { get; private set; }
 
         public bool IsRawFormat { get; private set; }
 
@@ -91,6 +100,21 @@ namespace DicomViewCtrl.Dicom.Data
             }
         }
 
+        public async Task OpenAsDicomFileAsync(int frameIndex)
+        {
+            var upperFileExtension = System.IO.Path.GetExtension(this.FilePath).ToUpper();
+
+            if (upperFileExtension != ".DCM")
+                return;
+
+            this.frameIndex = frameIndex;
+
+            if (!string.IsNullOrEmpty(FilePath) && IsRawFormat == false)
+            {
+                await OpenDicomFileAsync(FilePath, this.frameIndex);
+            }
+        }
+
         public void OpenAsRawFile(int width,int height,int bits)
         {
             OpenRawFile(this.FilePath, width, height, bits);
@@ -120,9 +144,41 @@ namespace DicomViewCtrl.Dicom.Data
                 WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows,this.BitsStored);
                 var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
                 this.PreviewImage = imageSource;
-                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, 256, 256);
+                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private async Task OpenDicomFileAsync(string dicomFilePath, int frameIndex = 0)
+        {
+            try
+            {
+                FellowOakDicom.DicomFile dicomFile = await FellowOakDicom.DicomFile.OpenAsync(dicomFilePath);
+                var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
+#pragma warning disable CS0618
+
+                var photometricInterpretation = GetPhotometricInterpretation(dicomFile);
+                if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
+                    throw new Exception("Not supported PhotometricInterpretation");
+
+                ReadCommonDicomTag(dicomFile);
+                var pixelData = ReadDicomPixelData(dicomFile, frameIndex);
+
+                if (pixelData == null)
+                    throw new Exception("Pixel data is null");
+
+                ImageData = new byte[this.Rows * this.Columns * BytePerPixel];
+                Array.Copy(pixelData, this.ImageData, pixelData.Length);
+
+                WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows, this.BitsStored);
+                var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
+                this.PreviewImage = imageSource;
+                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -151,6 +207,13 @@ namespace DicomViewCtrl.Dicom.Data
             dicomFile.Dataset.TryGetValue<string>(DicomTag.StudyDescription, 0,out string title);
             this.Title = title;
             this.SopInstanceUID = dicomFile.Dataset.GetValue<string>(DicomTag.SOPInstanceUID,0);
+            this.PatientName = dicomFile.Dataset.GetValue<string>(DicomTag.PatientName, 0);
+            var studyDate = "";
+            var studyTime = "";
+            dicomFile.Dataset.TryGetValue<string>(DicomTag.StudyDate, 0,out studyDate);
+            dicomFile.Dataset.TryGetValue<string>(DicomTag.StudyTime, 0, out studyTime);
+            this.StudyDate = studyDate;
+            this.StudyTime = studyTime;
 
             var samplesPerPixel = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.SamplesPerPixel, 1); // 1 for grayscale, 3 for RGB
             var bitsAllocated = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.BitsAllocated, 8);
@@ -187,7 +250,7 @@ namespace DicomViewCtrl.Dicom.Data
             WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(buffer, this.Columns, this.Rows, this.BitsStored);
             var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
             this.PreviewImage = imageSource;
-            this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, 256, 256);
+            this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
         }
     }
 }
