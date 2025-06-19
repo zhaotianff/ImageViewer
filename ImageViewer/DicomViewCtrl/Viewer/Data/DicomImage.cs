@@ -22,7 +22,7 @@ namespace DicomViewCtrl.Viewer.Data
 
         public int Bits { get; internal set; }
 
-        internal string SopUID { get; set; }
+        internal string SopInstanceUID { get; set; }
 
         private string title;
 

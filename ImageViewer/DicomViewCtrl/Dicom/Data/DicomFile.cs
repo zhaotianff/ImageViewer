@@ -39,7 +39,7 @@ namespace DicomViewCtrl.Dicom.Data
 
         public string Title { get; private set; }
 
-        public string SopUID { get; private set; }
+        public string SopInstanceUID { get; private set; }
 
         public bool IsRawFormat { get; private set; }
 
@@ -150,7 +150,7 @@ namespace DicomViewCtrl.Dicom.Data
             this.WindowCenter = wl;
             dicomFile.Dataset.TryGetValue<string>(DicomTag.StudyDescription, 0,out string title);
             this.Title = title;
-            this.SopUID = dicomFile.Dataset.GetValue<string>(DicomTag.SOPInstanceUID,0);
+            this.SopInstanceUID = dicomFile.Dataset.GetValue<string>(DicomTag.SOPInstanceUID,0);
 
             var samplesPerPixel = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.SamplesPerPixel, 1); // 1 for grayscale, 3 for RGB
             var bitsAllocated = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.BitsAllocated, 8);

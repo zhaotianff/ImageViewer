@@ -74,7 +74,7 @@ namespace DicomViewCtrl
 
         private void AddToImageList(DicomFile dicomFile)
         {
-            if (this.ImageList.FirstOrDefault(x => x.SopUID == dicomFile.SopUID) != null)
+            if (this.ImageList.FirstOrDefault(x => x.SopInstanceUID == dicomFile.SopInstanceUID) != null)
                 return;
 
             DicomImage dicomImage = new DicomImage();
@@ -85,7 +85,7 @@ namespace DicomViewCtrl
             dicomImage.Height = dicomFile.Rows;
             dicomImage.Bits = dicomFile.BitsStored;
             dicomImage.Title = dicomFile.Title ?? "No description";
-            dicomImage.SopUID = dicomFile.SopUID;
+            dicomImage.SopInstanceUID = dicomFile.SopInstanceUID;
 
             this.ImageList.Add(dicomImage);
         }
