@@ -38,6 +38,17 @@ namespace DicomViewCtrl
         public bool HasImage { get; set; } = false;
         private Point LastZoomPoint { get; set; }
 
+        public int FrameIndex
+        {
+            get
+            {
+                if (dicomFile != null)
+                    return dicomFile.FrameIndex;
+
+                return -1;
+            }
+        }
+
         public flyff()
         {
             InitializeComponent();
@@ -57,6 +68,26 @@ namespace DicomViewCtrl
             HasImage = true;
             ResetZoomPoint();
             AddToImageList(dicomFile);
+            return true;
+        }
+
+        public bool FetchFrame(int frameIndex)
+        {
+            if (this.dicomFile == null)
+                return false;
+
+            dicomFile.OpenDicomFrame(frameIndex);
+            this.image.Source = dicomFile.PreviewImage;
+
+            //TODO 马上下班了
+            if (this.ImageList[0].FrameList.Count > this.FrameIndex )
+            {
+                if (this.ImageList[0].FrameList[frameIndex].FrameThumbnail == null)
+                {
+                    this.ImageList[0].FrameList[frameIndex].FrameThumbnail = dicomFile.ThumbnailImage;
+                }
+            }
+
             return true;
         }
 
@@ -106,7 +137,20 @@ namespace DicomViewCtrl
             dicomImage.StudyDateTime = dicomFile.StudyDate + " " + dicomFile.StudyTime;
             dicomImage.PatientName = dicomFile.PatientName;
 
+            FetchAllFrames(dicomFile, dicomImage);
+
             this.ImageList.Add(dicomImage);
+        }
+
+        private void FetchAllFrames(DicomFile dicomFile, DicomImage dicomImage)
+        {
+            if (dicomFile.NumberOfFrames <= 1)
+                return;
+
+            dicomImage.FrameList = new ObservableCollection<FrameImage>(Enumerable.Range(0, dicomFile.NumberOfFrames).
+                Select(x => new FrameImage() { FrameIndex = x, FrameThumbnail = null }));
+
+            dicomImage.FrameList[0].FrameThumbnail = dicomFile.ThumbnailImage;
         }
 
 
@@ -116,8 +160,6 @@ namespace DicomViewCtrl
 
             if (imageData.Length != (width * height * bytePerPixel))
                 throw new Exception("Image data error!");
-
-
         }
 
         public bool CloseImage()

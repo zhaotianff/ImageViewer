@@ -23,6 +23,8 @@ namespace DicomViewCtrl.Dicom.Data
         private const int ThumbnailWidth = 48;
         private const int ThumbnailHeight = 48;
 
+        private FellowOakDicom.DicomFile dicomFile = null;
+
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public int BitsStored { get; private set; }
@@ -52,28 +54,10 @@ namespace DicomViewCtrl.Dicom.Data
 
         public bool IsRawFormat { get; private set; }
 
-        private int frameIndex = -1;
+        public int NumberOfFrames { get; private set; }
 
-        public int FrameIndex
-        {
-            get
-            {
-                return frameIndex;
-            }
+        public int FrameIndex { get; private set; } = 0;
 
-            set
-            {
-                if(this.frameIndex != value && value != -1)
-                {
-                    this.frameIndex = value;
-
-                    if(!string.IsNullOrEmpty(FilePath) && IsRawFormat == false)
-                    {
-                        OpenDicomFile(FilePath, this.frameIndex);
-                    }
-                }
-            }
-        }
 
         static DicomFile()
         {
@@ -87,7 +71,6 @@ namespace DicomViewCtrl.Dicom.Data
         public DicomFile(string filePath)
         {
             this.FilePath = filePath;
-            this.FrameIndex = -1;
         }     
         
         public void OpenAsDicomFile(int frameIndex)
@@ -96,7 +79,7 @@ namespace DicomViewCtrl.Dicom.Data
 
             if (upperFileExtension == ".DCM")
             {
-                this.FrameIndex = 0;
+                OpenDicomFile(FilePath, 0);
             }
         }
 
@@ -107,12 +90,23 @@ namespace DicomViewCtrl.Dicom.Data
             if (upperFileExtension != ".DCM")
                 return;
 
-            this.frameIndex = frameIndex;
-
             if (!string.IsNullOrEmpty(FilePath) && IsRawFormat == false)
             {
-                await OpenDicomFileAsync(FilePath, this.frameIndex);
+                await OpenDicomFileAsync(FilePath, 0);
             }
+        }
+
+        public void OpenDicomFrame(int frameIndex)
+        {
+            if (this.dicomFile == null)
+            {
+                throw new Exception("Not open yet");
+            }
+
+            if (frameIndex == this.FrameIndex)
+                return;
+
+            InternalOpenFrameAndPreview(this.dicomFile, frameIndex);
         }
 
         public void OpenAsRawFile(int width,int height,int bits)
@@ -124,7 +118,7 @@ namespace DicomViewCtrl.Dicom.Data
         {
             try
             {
-                FellowOakDicom.DicomFile dicomFile = FellowOakDicom.DicomFile.Open(dicomFilePath);
+                dicomFile = FellowOakDicom.DicomFile.Open(dicomFilePath);
                 var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
 #pragma warning disable CS0618
 
@@ -133,18 +127,7 @@ namespace DicomViewCtrl.Dicom.Data
                     throw new Exception("Not supported PhotometricInterpretation");
 
                 ReadCommonDicomTag(dicomFile);
-                var pixelData = ReadDicomPixelData(dicomFile, frameIndex);               
-
-                if (pixelData == null)
-                    throw new Exception("Pixel data is null");
-
-                ImageData = new byte[this.Rows * this.Columns * BytePerPixel];
-                Array.Copy(pixelData, this.ImageData, pixelData.Length);
-
-                WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows,this.BitsStored);
-                var imageSource = ConvertUtil.GetImageSource(writeableBitmap);
-                this.PreviewImage = imageSource;
-                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
+                InternalOpenFrameAndPreview(dicomFile, frameIndex);
             }
             catch(Exception ex)
             {
@@ -152,11 +135,29 @@ namespace DicomViewCtrl.Dicom.Data
             }
         }
 
+        private void InternalOpenFrameAndPreview(FellowOakDicom.DicomFile dicomFile, int frameIndex)
+        {
+            var pixelData = ReadDicomPixelData(dicomFile, frameIndex);
+
+            if (pixelData == null)
+                throw new Exception("Pixel data is null");
+
+            ImageData = new byte[this.Rows * this.Columns * BytePerPixel];
+            Array.Copy(pixelData, this.ImageData, pixelData.Length);
+
+            WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows, this.BitsStored);
+
+            this.FrameIndex = frameIndex;
+
+            this.PreviewImage = ConvertUtil.GetImageSource(writeableBitmap);
+            this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
+        }
+
         private async Task OpenDicomFileAsync(string dicomFilePath, int frameIndex = 0)
         {
             try
             {
-                FellowOakDicom.DicomFile dicomFile = await FellowOakDicom.DicomFile.OpenAsync(dicomFilePath);
+                dicomFile = await FellowOakDicom.DicomFile.OpenAsync(dicomFilePath);
                 var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
 #pragma warning disable CS0618
 
@@ -219,6 +220,7 @@ namespace DicomViewCtrl.Dicom.Data
             var bitsAllocated = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.BitsAllocated, 8);
 
             this.BytePerPixel = (bitsAllocated / 8) * samplesPerPixel;
+            this.NumberOfFrames = dicomFile.Dataset.GetSingleValueOrDefault(DicomTag.NumberOfFrames, 1);
         }
 
         public string GetPhotometricInterpretation(FellowOakDicom.DicomFile dicomFile)

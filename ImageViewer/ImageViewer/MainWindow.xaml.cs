@@ -98,5 +98,13 @@ namespace ImageViewer
                 }
             }
         }
+
+        private void list_FrameList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.list_FrameList.SelectedIndex == -1)
+                return;
+
+            this.imgview.FetchFrame(this.list_FrameList.SelectedIndex);
+        }
     }
 }

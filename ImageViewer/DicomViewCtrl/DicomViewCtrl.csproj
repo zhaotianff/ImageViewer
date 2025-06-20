@@ -150,6 +150,7 @@
     <Compile Include="Util\ConvertUtil.cs" />
     <Compile Include="Util\WinAPI.cs" />
     <Compile Include="Viewer\Data\DicomImage.cs" />
+    <Compile Include="Viewer\Data\FrameImage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

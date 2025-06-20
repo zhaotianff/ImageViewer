@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,17 @@ namespace DicomViewCtrl.Viewer.Data
 
         public string FilePath { get; internal set; }
 
-        public ImageSource Thumbnail { get; internal set; }
+        private ImageSource thumbnail;
+
+        public ImageSource Thumbnail 
+        {
+            get => thumbnail;
+            internal set
+            {
+                thumbnail = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Thumbnail"));
+            }
+        }
 
         public int Width { get; internal set; }
 
@@ -27,6 +38,20 @@ namespace DicomViewCtrl.Viewer.Data
         public string StudyDateTime { get; internal set; }
 
         public string PatientName { get; internal set; }
+
+        public ObservableCollection<FrameImage> FrameList { get; internal set; }
+
+        private int selectedFrameIndex = 0;
+
+        public int SelectedFrameIndex
+        {
+            get => selectedFrameIndex;
+            set
+            {
+                selectedFrameIndex = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFrameIndex"));
+            }
+        }
 
         private string title;
 

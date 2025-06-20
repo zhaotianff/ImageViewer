@@ -70,12 +70,23 @@
 
                 <ListBox Grid.Row="1" Style="{StaticResource ListBoxStyle}" ScrollViewer.PanningMode="HorizontalOnly"  HorizontalContentAlignment="Center" 
                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                         Name="list_FrameList" PreviewMouseWheel="list_FrameList_MouseWheel">
+                         Name="list_FrameList" PreviewMouseWheel="list_FrameList_MouseWheel" 
+                         ItemsSource="{Binding ElementName=list_ImageList,Path=SelectedItem.FrameList}"
+                         SelectedIndex="{Binding ElementName=list_ImageList,Path=SelectedItem.SelectedFrameIndex}"
+                         SelectionChanged="list_FrameList_SelectionChanged">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" Background="Transparent"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Background="Black" Width="55">
+                                <Label Content="{Binding FrameIndex}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3" Foreground="White"></Label>
+                                <Image Source="{Binding FrameThumbnail}" Stretch="Uniform"></Image>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
         </Grid>
