@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34114.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DicomRenderImageTest", "DicomRenderImageTest\DicomRenderImageTest.csproj", "{569059F0-0148-4756-982C-5287EE2639FE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{569059F0-0148-4756-982C-5287EE2639FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{569059F0-0148-4756-982C-5287EE2639FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{569059F0-0148-4756-982C-5287EE2639FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{569059F0-0148-4756-982C-5287EE2639FE}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63D7E654-A94E-4E4B-BB4D-7995FDC3F4FD}
+	EndGlobalSection
+EndGlobal
