@@ -267,7 +267,7 @@
 
     <ControlTemplate x:Key="HorizontalScrollBar"
                  TargetType="{x:Type ScrollBar}">
-        <Grid Height="15" Background="Transparent">
+        <Grid Height="8" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MaxWidth="18" />
                 <ColumnDefinition Width="0.00001*" />
@@ -349,7 +349,7 @@
                 <Setter Property="Width"
               Value="Auto" />
                 <Setter Property="Height"
-              Value="18" />
+              Value="8" />
                 <Setter Property="Template"
               Value="{StaticResource HorizontalScrollBar}" />
             </Trigger>

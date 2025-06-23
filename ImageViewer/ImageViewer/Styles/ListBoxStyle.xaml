@@ -55,7 +55,6 @@
           Value="true" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource ListBoxItemStyle}"></Setter>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Margin" Value="5"/>
         <Setter Property="BorderThickness" Value="0.5"/>
         <Setter Property="BorderBrush" Value="Silver"/>
     </Style>

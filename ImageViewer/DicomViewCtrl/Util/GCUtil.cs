@@ -16,6 +16,7 @@ namespace DicomViewCtrl.Util
 
             dicomFile.ImageData = null;
             dicomFile.PreviewImage = null;
+            dicomFile.UncompressedPixelData = null;
 
             GC.Collect();
         }

@@ -45,7 +45,15 @@ namespace ImageViewer
             if (openFileDialog.ShowDialog() == true)
             {
                 imgview.OpenImage(openFileDialog.FileName);
+                SelectLastItem();
             }
+        }
+
+        private void SelectLastItem()
+        {
+            this.list_ImageList.SelectionChanged -= this.list_ImageList_SelectionChanged;
+            this.list_ImageList.SelectedIndex = this.imgview.ImageList.Count -1;
+            this.list_ImageList.SelectionChanged += this.list_ImageList_SelectionChanged;
         }
 
         private void OpenRaw_Click(object sender, RoutedEventArgs e)
@@ -59,6 +67,7 @@ namespace ImageViewer
                 if (inputImageSizeWindow.ShowDialog() == true)
                 {
                     imgview.OpenRaw(openFileDialog.FileName, inputImageSizeWindow.ImageWidth, inputImageSizeWindow.ImageHeight, inputImageSizeWindow.ImageBits);
+                    SelectLastItem();
                 }
 
             }
@@ -105,6 +114,53 @@ namespace ImageViewer
                 return;
 
             this.imgview.FetchFrame(this.list_ImageList.SelectedIndex, this.list_FrameList.SelectedIndex);
+        }
+
+        private void frameListGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void frameListGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private async void Play()
+        {
+            
+        }
+
+        private void Pause()
+        {
+
+        }
+
+        private void SwitchNextFrame()
+        {
+            if (this.list_FrameList.SelectedIndex == this.imgview.ImageList.Count - 1)
+                this.list_FrameList.SelectedIndex = 0;
+            else
+                this.list_FrameList.SelectedIndex++;
+
+        }
+
+        private void SwitchPreviousFrame()
+        {
+            if (this.list_FrameList.SelectedIndex == 0)
+                this.list_FrameList.SelectedIndex = this.imgview.ImageList.Count - 1;
+            else
+                this.list_FrameList.SelectedIndex--;
+        }
+
+        private void btn_Previous_Click(object sender, RoutedEventArgs e)
+        {
+            SwitchPreviousFrame();
+        }
+
+        private void btn_Next_Click(object sender, RoutedEventArgs e)
+        {
+            SwitchNextFrame();
         }
     }
 }

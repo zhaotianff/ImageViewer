@@ -32,6 +32,8 @@ namespace DicomViewCtrl.Dicom.Data
 
         public byte[] ImageData { get; internal set; }
 
+        internal DicomPixelData UncompressedPixelData { get; set; }
+
         public ImageSource ThumbnailImage { get; private set; }
 
         public ImageSource PreviewImage { get; internal set; }
@@ -188,12 +190,21 @@ namespace DicomViewCtrl.Dicom.Data
         private byte[] ReadDicomPixelData(FellowOakDicom.DicomFile dicomFile,int frameIndex)
         {
             if (dicomFile.Dataset.InternalTransferSyntax.IsEncapsulated == false)
-                return DicomPixelData.Create(dicomFile.Dataset).GetFrame(frameIndex).Data;
+            {
+                if(UncompressedPixelData == null)
+                {
+                    UncompressedPixelData = DicomPixelData.Create(dicomFile.Dataset);
+                }
+                return UncompressedPixelData.GetFrame(frameIndex).Data;
+            }
 
-            var transcoder = new DicomTranscoder(dicomFile.Dataset.InternalTransferSyntax, DicomTransferSyntax.ExplicitVRLittleEndian);
-            var transcoded = transcoder.Transcode(dicomFile.Dataset);
-            var pixelData = DicomPixelData.Create(transcoded);
-            return pixelData.GetFrame(frameIndex).Data;
+            if (UncompressedPixelData == null)
+            {
+                var transcoder = new DicomTranscoder(dicomFile.Dataset.InternalTransferSyntax, DicomTransferSyntax.ExplicitVRLittleEndian);
+                var transcoded = transcoder.Transcode(dicomFile.Dataset);
+                UncompressedPixelData = DicomPixelData.Create(transcoded);
+            }
+            return UncompressedPixelData.GetFrame(frameIndex).Data;
         }
 
         private void ReadCommonDicomTag(FellowOakDicom.DicomFile dicomFile)
