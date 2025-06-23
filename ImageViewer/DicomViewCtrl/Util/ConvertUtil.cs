@@ -53,6 +53,7 @@ namespace DicomViewCtrl.Util
             Int32Rect int32Rect = new Int32Rect(0, 0, width, height);
             writeableBitmap.AddDirtyRect(int32Rect);
             writeableBitmap.Unlock();
+            writeableBitmap.Freeze();
             return writeableBitmap;
         }
 
@@ -114,6 +115,7 @@ namespace DicomViewCtrl.Util
             }
             writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
             writeableBitmap.Unlock();
+            writeableBitmap.Freeze();
             return writeableBitmap;
         }
 

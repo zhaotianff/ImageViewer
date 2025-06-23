@@ -30,11 +30,11 @@ namespace DicomViewCtrl.Dicom.Data
         public int BitsStored { get; private set; }
         public int BytePerPixel { get; private set; }
 
-        public byte[] ImageData { get; private set; }
+        public byte[] ImageData { get; internal set; }
 
         public ImageSource ThumbnailImage { get; private set; }
 
-        public ImageSource PreviewImage { get; private set; }
+        public ImageSource PreviewImage { get; internal set; }
 
         public string FilePath { get; private set; }
 

@@ -104,7 +104,7 @@ namespace ImageViewer
             if (this.list_FrameList.SelectedIndex == -1)
                 return;
 
-            this.imgview.FetchFrame(this.list_FrameList.SelectedIndex);
+            this.imgview.FetchFrame(this.list_ImageList.SelectedIndex, this.list_FrameList.SelectedIndex);
         }
     }
 }

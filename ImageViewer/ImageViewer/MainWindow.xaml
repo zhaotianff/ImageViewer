@@ -72,7 +72,6 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                          Name="list_FrameList" PreviewMouseWheel="list_FrameList_MouseWheel" 
                          ItemsSource="{Binding ElementName=list_ImageList,Path=SelectedItem.FrameList}"
-                         SelectedIndex="{Binding ElementName=list_ImageList,Path=SelectedItem.SelectedFrameIndex}"
                          SelectionChanged="list_FrameList_SelectionChanged">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>

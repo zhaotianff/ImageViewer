@@ -41,18 +41,6 @@ namespace DicomViewCtrl.Viewer.Data
 
         public ObservableCollection<FrameImage> FrameList { get; internal set; }
 
-        private int selectedFrameIndex = 0;
-
-        public int SelectedFrameIndex
-        {
-            get => selectedFrameIndex;
-            set
-            {
-                selectedFrameIndex = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFrameIndex"));
-            }
-        }
-
         private string title;
 
         public string Title

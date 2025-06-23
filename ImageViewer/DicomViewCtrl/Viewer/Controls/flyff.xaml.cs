@@ -71,22 +71,21 @@ namespace DicomViewCtrl
             return true;
         }
 
-        public bool FetchFrame(int frameIndex)
+        public bool FetchFrame(int imageIndex,int frameIndex)
         {
             if (this.dicomFile == null)
+                return false;
+
+            if (this.FrameIndex >= this.ImageList[imageIndex].FrameList.Count)
                 return false;
 
             dicomFile.OpenDicomFrame(frameIndex);
             this.image.Source = dicomFile.PreviewImage;
 
-            //TODO 马上下班了
-            if (this.ImageList[0].FrameList.Count > this.FrameIndex )
+            if (this.ImageList[imageIndex].FrameList[frameIndex].FrameThumbnail == null)
             {
-                if (this.ImageList[0].FrameList[frameIndex].FrameThumbnail == null)
-                {
-                    this.ImageList[0].FrameList[frameIndex].FrameThumbnail = dicomFile.ThumbnailImage;
-                }
-            }
+                this.ImageList[imageIndex].FrameList[frameIndex].FrameThumbnail = dicomFile.ThumbnailImage;
+            }     
 
             return true;
         }
