@@ -71,6 +71,11 @@ namespace DicomViewCtrl
             return true;
         }
 
+        public bool PrefetchImage(string dicomFilePath)
+        {
+            return true;
+        }
+
         public bool FetchFrame(int imageIndex,int frameIndex)
         {
             if (this.dicomFile == null)

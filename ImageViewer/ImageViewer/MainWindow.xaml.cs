@@ -49,9 +49,14 @@ namespace ImageViewer
             
             if (openFileDialog.ShowDialog() == true)
             {
-                imgview.OpenImage(openFileDialog.FileName);
-                SelectLastItem();
+                OpenDicomFile(openFileDialog.FileName);
             }
+        }
+
+        private void OpenDicomFile(string fileName)
+        {
+            imgview.OpenImage(fileName);
+            SelectLastItem();
         }
 
         private void SelectLastItem()
@@ -127,19 +132,41 @@ namespace ImageViewer
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {
-                InputImageSizeWindow inputImageSizeWindow = new InputImageSizeWindow();
-                if (inputImageSizeWindow.ShowDialog() == true)
-                {
-                    imgview.OpenRaw(openFileDialog.FileName, inputImageSizeWindow.ImageWidth, inputImageSizeWindow.ImageHeight, inputImageSizeWindow.ImageBits);
-                    SelectLastItem();
-                }
-
+                OpenRawFile(openFileDialog.FileName);
             }
         }
 
-        private void OpenDicomDirectory_Click(object sender, RoutedEventArgs e)
+        private void OpenRawFile(string fileName)
         {
+            InputImageSizeWindow inputImageSizeWindow = new InputImageSizeWindow();
+            if (inputImageSizeWindow.ShowDialog() == true)
+            {
+                imgview.OpenRaw(fileName, inputImageSizeWindow.ImageWidth, inputImageSizeWindow.ImageHeight, inputImageSizeWindow.ImageBits);
+                SelectLastItem();
+            }
+        }
 
+        private async void OpenDicomDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            var dir = DialogHelper.BrowserForFolder("打开Dicom文件夹");
+            await OpenDicomFolderAsync(dir);
+        }
+
+        private async Task OpenDicomFolderAsync(string dir)
+        {
+            var files = DirectoryHelper.GetFiles(dir, "*.dcm");
+
+            if (files == null || files.Length == 0)
+                return;
+
+            OpenDicomFile(files[0]);
+
+            for(int i = 1;i<files.Length;i++)
+            {
+                await Task.Run(() => {
+                    this.imgview.PrefetchImage(files[i]);
+                });
+            }
         }
 
         private void list_ImageList_SelectionChanged(object sender, SelectionChangedEventArgs e)

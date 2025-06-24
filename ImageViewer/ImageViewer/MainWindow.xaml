@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" ItemContainerStyle="{StaticResource MenuItemStyle}" Background="Black" BorderThickness="0.5" BorderBrush="Silver">
@@ -109,5 +110,9 @@
               
            
         </Grid>
+
+        <StatusBar Grid.Row="2" Background="Black" BorderBrush="Silver" BorderThickness="0,1,0,0">
+            <Label Name="lbl_Status" Foreground="White" Content="" FontSize="10" VerticalAlignment="Center" Height="25"></Label>
+        </StatusBar>
     </Grid>
 </localcontrols:CustomWindow>
