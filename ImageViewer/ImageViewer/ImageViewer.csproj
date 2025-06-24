@@ -61,7 +61,10 @@
     <Compile Include="Controls\CustomWindow.cs" />
     <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Attributes\DisplayName.cs" />
+    <Compile Include="Infrastructure\Definitions\FpsType.cs" />
     <Compile Include="Themes\BlurWindowEvent.cs" />
+    <Compile Include="Util\EnumHelper.cs" />
     <Compile Include="Util\TreeHelper.cs" />
     <Compile Include="Util\WindowHelper.cs" />
     <Compile Include="Views\Dialog\InputImageSizeWindow.xaml.cs">
@@ -142,6 +145,9 @@
       <Project>{ef16c295-cd01-4dba-86c7-5127a382dce7}</Project>
       <Name>DicomViewCtrl</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\UserControls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

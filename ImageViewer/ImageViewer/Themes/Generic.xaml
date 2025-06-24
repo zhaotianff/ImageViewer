@@ -231,4 +231,35 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style TargetType="{x:Type controls:ImageRepeatButton}" BasedOn="{StaticResource {x:Type RepeatButton}}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ImageRepeatButton}">
+                    <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" 
+                            Background="{TemplateBinding Background}" Name="border" SnapsToDevicePixels="True">
+                        <Viewbox x:Name="ViewBoxInternal" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{TemplateBinding IsEnabled}"
+                            Stretch="Uniform" StretchDirection="Both" Margin="5" Effect="{x:Null}">
+                            <ContentPresenter ContentSource="{TemplateBinding Content}" Width="Auto" Height="Auto"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Viewbox>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#66C5C5C5" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#7FC5C5C5" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value=".6"/>
+                <Setter Property="Effect" Value="{x:Null}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

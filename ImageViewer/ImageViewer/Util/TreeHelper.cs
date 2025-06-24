@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ImageViewer.Util
@@ -28,6 +29,12 @@ namespace ImageViewer.Util
                 }
             }
             return null;
+        }
+
+        public static bool IsMouseOverControl(FrameworkElement control)
+        {
+            Point mousePos = Mouse.GetPosition(control);
+            return new Rect(new Size(control.ActualWidth, control.ActualHeight)).Contains(mousePos);
         }
     }
 }

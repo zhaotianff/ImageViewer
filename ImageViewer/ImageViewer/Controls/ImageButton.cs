@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -34,6 +35,14 @@ namespace ImageViewer.Controls
             {
                 return (string)GetValue(TextProperty);
             }
+        }
+    }
+
+    public class ImageRepeatButton : RepeatButton
+    {
+        static ImageRepeatButton()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ImageRepeatButton), new FrameworkPropertyMetadata(typeof(ImageRepeatButton)));
         }
     }
 }

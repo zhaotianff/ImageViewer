@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using ImageViewer.Util;
 using ImageViewer.Views.Dialog;
+using ImageViewer.Infrastructure.Definitions;
+using ImageViewer.Infrastructure.Attributes;
 
 namespace ImageViewer
 {
@@ -25,6 +27,9 @@ namespace ImageViewer
     /// </summary>
     public partial class MainWindow : Controls.CustomWindow
     {
+        private bool isPlay = false;
+        private FpsType fpsType = FpsType.Fps_20;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -54,6 +59,65 @@ namespace ImageViewer
             this.list_ImageList.SelectionChanged -= this.list_ImageList_SelectionChanged;
             this.list_ImageList.SelectedIndex = this.imgview.ImageList.Count -1;
             this.list_ImageList.SelectionChanged += this.list_ImageList_SelectionChanged;
+
+            ShowPlayerUI(isAutoHidden: true);
+            SelectFirstFrame();
+            btn_Pause_Click(null, null);
+        }
+
+        private void SelectFirstFrame()
+        {
+            this.list_FrameList.SelectionChanged -= this.list_FrameList_SelectionChanged;
+            this.list_FrameList.SelectedIndex = 0;
+            this.list_FrameList.SelectionChanged += this.list_FrameList_SelectionChanged;
+
+            if(this.list_FrameList.Items.Count > 0)
+            {
+                this.list_FrameList.ScrollIntoView(this.list_FrameList.Items[0]);
+            }
+        }
+
+        private async void ShowPlayerUI(bool isShow = true, bool isAutoHidden = false)
+        {
+            if (this.imgview.ImageList == null || this.imgview.ImageList.Count == 0)
+                return;
+
+            var frameList = this.imgview.ImageList[this.list_ImageList.SelectedIndex].FrameList;
+            if (frameList != null && frameList.Count > 0 && isShow == true)
+            {
+                SetFrameListPlayerUIVisibility(Visibility.Visible);
+
+                if (isAutoHidden)
+                {
+                    await Task.Delay(3000);
+                    if (TreeHelper.IsMouseOverControl(this.grid_FrameList) == false)
+                    {
+                        SetFrameListPlayerUIVisibility(Visibility.Hidden);
+                    }
+                }
+            }
+            else
+            {
+                SetFrameListPlayerUIVisibility(Visibility.Hidden);
+            }
+        }
+
+        private void SetFrameListPlayerUIVisibility(Visibility visibility)
+        {
+            foreach (UIElement item in grid_FrameList.Children)
+            {
+                item.Visibility = visibility;
+            }
+        }
+
+        private void frameListGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ShowPlayerUI();
+        }
+
+        private void frameListGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ShowPlayerUI(false);
         }
 
         private void OpenRaw_Click(object sender, RoutedEventArgs e)
@@ -93,6 +157,10 @@ namespace ImageViewer
             {
                 this.imgview.OpenImage(selectedImage.FilePath);
             }
+
+            ShowPlayerUI(isAutoHidden: true);
+            SelectFirstFrame();
+            btn_Pause_Click(null, null);
         }
 
         private void list_FrameList_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -116,41 +184,49 @@ namespace ImageViewer
             this.imgview.FetchFrame(this.list_ImageList.SelectedIndex, this.list_FrameList.SelectedIndex);
         }
 
-        private void frameListGrid_MouseEnter(object sender, MouseEventArgs e)
+        private void Play()
         {
+            isPlay = true;
 
-        }
-
-        private void frameListGrid_MouseLeave(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private async void Play()
-        {
+            Task.Run(async () => {
+                while (isPlay)
+                {
+                    await Task.Delay(fpsType.GetFrameWaitMillionSeconds());
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        SwitchNextFrame();
+                    });
+                }
+            });
             
         }
 
         private void Pause()
         {
-
+            isPlay = false;
         }
 
         private void SwitchNextFrame()
         {
-            if (this.list_FrameList.SelectedIndex == this.imgview.ImageList.Count - 1)
+            if (this.list_FrameList.SelectedIndex == this.imgview.ImageList[this.list_ImageList.SelectedIndex].FrameList.Count - 1)
                 this.list_FrameList.SelectedIndex = 0;
             else
+            {
                 this.list_FrameList.SelectedIndex++;
+                this.list_FrameList.ScrollIntoView(this.list_FrameList.SelectedItem);
+            }
 
         }
 
         private void SwitchPreviousFrame()
         {
             if (this.list_FrameList.SelectedIndex == 0)
-                this.list_FrameList.SelectedIndex = this.imgview.ImageList.Count - 1;
+                this.list_FrameList.SelectedIndex = this.imgview.ImageList[this.list_ImageList.SelectedIndex].FrameList.Count - 1;
             else
+            {
                 this.list_FrameList.SelectedIndex--;
+                this.list_FrameList.ScrollIntoView(this.list_FrameList.SelectedItem);
+            }
         }
 
         private void btn_Previous_Click(object sender, RoutedEventArgs e)
@@ -161,6 +237,36 @@ namespace ImageViewer
         private void btn_Next_Click(object sender, RoutedEventArgs e)
         {
             SwitchNextFrame();
+        }
+
+        private void btn_Fps_Click(object sender, RoutedEventArgs e)
+        {
+            var fps = (int)fpsType;
+            fps++;
+            fps = fps % Enum.GetNames(typeof(FpsType)).Length;
+            fpsType = (FpsType)fps;
+            btn_Fps.Content = fpsType.GetDisplayName();
+        }
+
+        private void btn_Play_Click(object sender, RoutedEventArgs e)
+        {
+            this.btn_Pause.Visibility = Visibility.Visible;
+            this.btn_Play.Visibility = Visibility.Collapsed;
+
+            Play();
+        }
+
+        private void btn_Pause_Click(object sender, RoutedEventArgs e)
+        {
+            this.btn_Pause.Visibility = Visibility.Collapsed;
+            this.btn_Play.Visibility = Visibility.Visible;
+
+            Pause();
+        }
+
+        private void CustomWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Pause();
         }
     }
 }

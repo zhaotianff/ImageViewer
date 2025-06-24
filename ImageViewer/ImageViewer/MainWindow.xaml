@@ -7,7 +7,7 @@
         xmlns:ctrl="clr-namespace:DicomViewCtrl;assembly=DicomViewCtrl"
         xmlns:localcontrols="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
-        Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen">
+        Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Closing="CustomWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -69,7 +69,7 @@
                 <ctrl:flyff x:Name="imgview" />
 
                 <Grid Background="Transparent" Width="500" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" MouseEnter="frameListGrid_MouseEnter" 
-                      MouseLeave="frameListGrid_MouseLeave" Panel.ZIndex="2">
+                      MouseLeave="frameListGrid_MouseLeave" Panel.ZIndex="2" Name="grid_FrameList">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="35"/>
@@ -79,7 +79,7 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                              Name="list_FrameList" PreviewMouseWheel="list_FrameList_MouseWheel" 
                              ItemsSource="{Binding ElementName=list_ImageList,Path=SelectedItem.FrameList}"
-                             SelectionChanged="list_FrameList_SelectionChanged">      
+                             SelectionChanged="list_FrameList_SelectionChanged" Visibility="Hidden">      
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" Background="Transparent"/>
@@ -95,12 +95,12 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <DockPanel Grid.Row="1" HorizontalAlignment="Center">
-                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Previous}" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Previous" Click="btn_Previous_Click"></localcontrols:ImageButton>
-                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Play}"  Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Play"></localcontrols:ImageButton>
-                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Pause}"  Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Pause"></localcontrols:ImageButton>
-                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Next}"  Margin="0,0,20,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Next" Click="btn_Next_Click"></localcontrols:ImageButton>
-                        <Button Style="{StaticResource DefaultButtonStyle}" FontSize="8" Foreground="White" Width="25" Height="25" Content="20f/s" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Fps"></Button>
+                    <DockPanel Grid.Row="1" HorizontalAlignment="Center" Visibility="Hidden">
+                        <localcontrols:ImageRepeatButton Width="25" Height="25" Content="{DynamicResource Previous}" Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Previous" Click="btn_Previous_Click"></localcontrols:ImageRepeatButton>
+                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Play}"  Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Play" Click="btn_Play_Click"></localcontrols:ImageButton>
+                        <localcontrols:ImageButton Width="25" Height="25" Content="{DynamicResource Pause}" Visibility="Collapsed"  Margin="0,0,5,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Pause" Click="btn_Pause_Click"></localcontrols:ImageButton>
+                        <localcontrols:ImageRepeatButton Width="25" Height="25" Content="{DynamicResource Next}"  Margin="0,0,20,0" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Next" Click="btn_Next_Click"></localcontrols:ImageRepeatButton>
+                        <Button Style="{StaticResource DefaultButtonStyle}" FontSize="8" Foreground="White" Width="25" Height="25" Content="20f/s" BorderThickness="1" BorderBrush="Silver" x:Name="btn_Fps" Click="btn_Fps_Click"></Button>
                     </DockPanel>
                 </Grid>
             </Grid>
