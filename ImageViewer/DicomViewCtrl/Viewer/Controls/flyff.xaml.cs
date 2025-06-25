@@ -73,6 +73,9 @@ namespace DicomViewCtrl
 
         public bool PrefetchImage(string dicomFilePath)
         {
+            DicomFile localDicomFile = new DicomFile(dicomFilePath);
+            localDicomFile.OpenAsPrefetch();
+            AddToImageList(localDicomFile);
             return true;
         }
 
@@ -143,7 +146,7 @@ namespace DicomViewCtrl
 
             FetchAllFrames(dicomFile, dicomImage);
 
-            this.ImageList.Add(dicomImage);
+            DispatcherHelper.DispatherInvoke(() => { this.ImageList.Add(dicomImage); });
         }
 
         private void FetchAllFrames(DicomFile dicomFile, DicomImage dicomImage)

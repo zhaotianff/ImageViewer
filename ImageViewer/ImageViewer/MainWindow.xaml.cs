@@ -154,6 +154,9 @@ namespace ImageViewer
 
         private async Task OpenDicomFolderAsync(string dir)
         {
+            if (string.IsNullOrEmpty(dir) || DirectoryHelper.Exist(dir) == false)
+                return;
+
             var files = DirectoryHelper.GetFiles(dir, "*.dcm");
 
             if (files == null || files.Length == 0)
@@ -161,9 +164,10 @@ namespace ImageViewer
 
             OpenDicomFile(files[0]);
 
-            for(int i = 1;i<files.Length;i++)
+            for (int i = 1; i < files.Length; i++)
             {
-                await Task.Run(() => {
+                await Task.Run(() =>
+                {
                     this.imgview.PrefetchImage(files[i]);
                 });
             }

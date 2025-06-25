@@ -85,6 +85,20 @@ namespace DicomViewCtrl.Dicom.Data
             }
         }
 
+        public void OpenAsPrefetch()
+        {
+            try
+            {
+                dicomFile = FellowOakDicom.DicomFile.Open(FilePath);           
+                ReadCommonDicomTag(dicomFile);
+                InternalGetThumbnail(dicomFile);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task OpenAsDicomFileAsync(int frameIndex)
         {
             var upperFileExtension = System.IO.Path.GetExtension(this.FilePath).ToUpper();
@@ -122,8 +136,6 @@ namespace DicomViewCtrl.Dicom.Data
             {
                 dicomFile = FellowOakDicom.DicomFile.Open(dicomFilePath);
                 var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
-#pragma warning disable CS0618
-
                 var photometricInterpretation = GetPhotometricInterpretation(dicomFile);
                 if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
                     throw new Exception("Not supported PhotometricInterpretation");
@@ -150,9 +162,26 @@ namespace DicomViewCtrl.Dicom.Data
             WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows, this.BitsStored);
 
             this.FrameIndex = frameIndex;
-
-            this.PreviewImage = ConvertUtil.GetImageSource(writeableBitmap);
+        
+            this.PreviewImage = ConvertUtil.GetImageSource(writeableBitmap);    
             this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
+        }
+
+        private void InternalGetThumbnail(FellowOakDicom.DicomFile dicomFile)
+        {
+            var pixelData = ReadDicomPixelData(dicomFile, 0);
+
+            if (pixelData == null)
+                throw new Exception("Pixel data is null");
+
+            ImageData = new byte[this.Rows * this.Columns * BytePerPixel];
+            Array.Copy(pixelData, this.ImageData, pixelData.Length);
+
+            WriteableBitmap writeableBitmap = ConvertUtil.GetWriteableBitmap(this.ImageData, this.Columns, this.Rows, this.BitsStored);
+            DispatcherHelper.DispatherInvoke(() =>
+            {
+                this.ThumbnailImage = ConvertUtil.GetImageSourceThumbnail(writeableBitmap, ThumbnailWidth, ThumbnailHeight);
+            });
         }
 
         private async Task OpenDicomFileAsync(string dicomFilePath, int frameIndex = 0)
@@ -161,8 +190,6 @@ namespace DicomViewCtrl.Dicom.Data
             {
                 dicomFile = await FellowOakDicom.DicomFile.OpenAsync(dicomFilePath);
                 var uid = dicomFile.Dataset.InternalTransferSyntax.UID.UID;
-#pragma warning disable CS0618
-
                 var photometricInterpretation = GetPhotometricInterpretation(dicomFile);
                 if (SupportedPhotometricInterpretation.Contains(photometricInterpretation) == false)
                     throw new Exception("Not supported PhotometricInterpretation");

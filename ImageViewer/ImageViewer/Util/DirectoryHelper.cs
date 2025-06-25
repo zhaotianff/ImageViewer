@@ -13,5 +13,7 @@ namespace ImageViewer.Util
         {
             return Directory.GetFiles(dir, extension, SearchOption.AllDirectories);
         }
+
+        public static bool Exist(string dir) => Directory.Exists(dir);
     }
 }
