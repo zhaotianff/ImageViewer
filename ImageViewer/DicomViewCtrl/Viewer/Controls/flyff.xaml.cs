@@ -25,18 +25,18 @@ namespace DicomViewCtrl
     /// </summary>
     public partial class flyff : UserControl
     {
-        private const float MIN_ZOOMRATIO = 0.2f;
+        private const float MIN_ZOOMRATIO = 0.1f;
         private const float MAX_ZOOMRATIO = 3f;
-        private const float ZOOM_STEP = 0.2f;
+        private const float ZOOM_STEP = 0.002f;
 
         private float currentRatio = 1.0f;
-
+        private Point startZoomPoint;
+        private bool isZoomStart = false;
         private Dicom.Data.DicomFile dicomFile;
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
 
-        public bool HasImage { get; set; } = false;
-        private Point LastZoomPoint { get; set; }
+        public bool HasImage { get; set; } = false;       
 
         public int FrameIndex
         {
@@ -66,7 +66,6 @@ namespace DicomViewCtrl
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             HasImage = true;
-            ResetZoomPoint();
             AddToImageList(dicomFile);
             return true;
         }
@@ -110,7 +109,6 @@ namespace DicomViewCtrl
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             HasImage = true;
-            ResetZoomPoint();
             AddToImageList(dicomFile);
             return true;
         }
@@ -122,7 +120,6 @@ namespace DicomViewCtrl
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             HasImage = true;
-            ResetZoomPoint();
             AddToImageList(dicomFile);
             return true;
         }
@@ -228,6 +225,44 @@ namespace DicomViewCtrl
             scaleTransform.ScaleY = Math.Abs(scaleTransform.ScaleX);                
         }
 
+        private void ZoomImage(Point current)
+        {
+            Vector delta = current - startZoomPoint;
+
+            double dx = delta.X;
+            double dy = delta.Y;
+
+            double zoomDelta = 0;
+
+            if (dx < 0 && dy > 0)
+            {
+                zoomDelta = delta.Length * ZOOM_STEP;
+            }
+            else if (dx > 0 && dy < 0)
+            {
+                zoomDelta = -delta.Length * ZOOM_STEP;
+            }
+            else
+            {
+                startZoomPoint = current;
+                return;
+            }
+
+            double newScaleX = scaleTransform.ScaleX + zoomDelta;
+            double newScaleY = scaleTransform.ScaleY + zoomDelta;
+
+            newScaleX = Math.Max(MIN_ZOOMRATIO, Math.Min(MAX_ZOOMRATIO, newScaleX));
+            newScaleY = Math.Max(MIN_ZOOMRATIO, Math.Min(MAX_ZOOMRATIO, newScaleY));
+
+            scaleTransform.CenterX = this.image.ActualWidth / 2.0;
+            scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+
+            scaleTransform.ScaleX = newScaleX;
+            scaleTransform.ScaleY = newScaleY;
+
+            startZoomPoint = current;
+        }
+
         private void Border_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             ZoomImage(e.GetPosition(this.image), e.Delta);
@@ -235,59 +270,23 @@ namespace DicomViewCtrl
 
         private void Border_MouseMove(object sender, MouseEventArgs e)
         {
-            if(e.RightButton == MouseButtonState.Pressed)
+            if (isZoomStart)
             {
-                var point = e.GetPosition(this.image);
-
-                if (LastZoomPoint.X == 0 && LastZoomPoint.Y == 0)
-                {
-                    LastZoomPoint = point;
-                    return;
-                }
-
-                var xPos = point.X - LastZoomPoint.X;
-                var yPos = point.Y - LastZoomPoint.Y;
-
-                if (Math.Abs(xPos) < 10 && Math.Abs(yPos) < 10)
-                    return;
-
-                //Hit test
-
-                var ratio = currentRatio;
-                if (xPos < 0)
-                    ratio *= 1.1f;
-                else
-                    ratio *= 0.9f;
-
-                LimitRatio(ref ratio);
-
-                scaleTransform.CenterX = this.image.ActualWidth / 2.0;
-                scaleTransform.CenterY = this.image.ActualHeight / 2.0;
-
-                scaleTransform.ScaleX *= ratio / currentRatio;
-                scaleTransform.ScaleY *= ratio / currentRatio;
-
-                currentRatio = ratio;
-                LastZoomPoint = point;
+                ZoomImage(e.GetPosition(this.grid_Host));
             }
         }
 
-        private void LimitRatio(ref float ratio)
+        private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (ratio > MAX_ZOOMRATIO)
-                ratio = MAX_ZOOMRATIO;
-            else if(ratio < MIN_ZOOMRATIO)
-                ratio = MIN_ZOOMRATIO;
+            isZoomStart = true;
+            startZoomPoint = e.GetPosition(this.grid_Host);
+            this.grid_Host.CaptureMouse();
         }
 
-        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Grid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            ResetZoomPoint();
-        }
-
-        private void ResetZoomPoint()
-        {
-            LastZoomPoint = new Point();
+            isZoomStart = false;
+            this.grid_Host.ReleaseMouseCapture();
         }
     }
 }
