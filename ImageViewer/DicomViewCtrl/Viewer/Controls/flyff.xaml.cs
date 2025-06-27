@@ -394,22 +394,5 @@ namespace DicomViewCtrl
         {
             return new Point((canvasPoint.X - translateTransform.X) / scaleTransform.ScaleX,(canvasPoint.Y - translateTransform.Y) / scaleTransform.ScaleY);
         }
-
-
-        Label label;
-
-        private void canvas_LayoutUpdated(object sender, EventArgs e)
-        {
-            if (label == null)
-            {
-                label = new Label();
-                label.Foreground = Brushes.White;
-                this.canvas.Children.Add(label);
-            }
-            else
-            {
-                label.Content = $"Width = {this.canvas.ActualWidth} Height = {this.canvas.ActualHeight}";
-            }
-        }
     }
 }

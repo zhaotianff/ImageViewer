@@ -8,7 +8,7 @@
     <Canvas Background="Black" MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove" 
           MouseRightButtonDown="Canvas_MouseRightButtonDown" MouseRightButtonUp="Canvas_MouseRightButtonUp" 
             MouseLeftButtonDown="canvas_MouseLeftButtonDown" MouseLeftButtonUp="canvas_MouseLeftButtonUp"
-          ClipToBounds="True" Name="canvas" LayoutUpdated="canvas_LayoutUpdated">
+          ClipToBounds="True" Name="canvas">
         <Image x:Name="image">
             <Image.RenderTransform>
                 <TransformGroup>

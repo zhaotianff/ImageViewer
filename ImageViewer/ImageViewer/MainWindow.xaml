@@ -119,7 +119,7 @@
            
         </Grid>
 
-        <StatusBar Grid.Row="2" Background="Black" BorderBrush="Silver" BorderThickness="0,1,0,0">
+        <StatusBar Grid.Row="3" Background="Black" BorderBrush="Silver" BorderThickness="0,1,0,0">
             <Label Name="lbl_Status" Foreground="White" Content="" FontSize="10" VerticalAlignment="Center" Height="25"></Label>
         </StatusBar>
     </Grid>
