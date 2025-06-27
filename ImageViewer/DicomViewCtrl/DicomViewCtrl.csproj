@@ -154,6 +154,7 @@
     <Compile Include="Util\WinAPI.cs" />
     <Compile Include="Viewer\Data\DicomImage.cs" />
     <Compile Include="Viewer\Data\FrameImage.cs" />
+    <Compile Include="Viewer\Data\ProcType.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

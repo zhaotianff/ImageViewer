@@ -5,22 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="Black" MouseWheel="Border_MouseWheel" MouseMove="Border_MouseMove" 
-          MouseRightButtonDown="Grid_MouseRightButtonDown" MouseRightButtonUp="Grid_MouseRightButtonUp" 
-          ClipToBounds="True" Name="grid_Host">
+    <Canvas Background="Black" MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove" 
+          MouseRightButtonDown="Canvas_MouseRightButtonDown" MouseRightButtonUp="Canvas_MouseRightButtonUp" 
+            MouseLeftButtonDown="canvas_MouseLeftButtonDown" MouseLeftButtonUp="canvas_MouseLeftButtonUp"
+          ClipToBounds="True" Name="canvas" LayoutUpdated="canvas_LayoutUpdated">
         <Image x:Name="image">
             <Image.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform CenterX="0" CenterY="0" x:Name="scaleTransform"></ScaleTransform>
+                    <RotateTransform Angle="0" x:Name="rotateTransform" />
+                    <TranslateTransform X="0" Y="0" x:Name="translateTransform" />
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <Canvas Background="Transparent" Name="canvas">
-
-        </Canvas>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="stackpanel_Window">
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WL"></Label>
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WW"></Label>
         </StackPanel>
-    </Grid>
+    </Canvas>
 </UserControl>

@@ -27,11 +27,13 @@ namespace DicomViewCtrl
     {
         private const float MIN_ZOOMRATIO = 0.1f;
         private const float MAX_ZOOMRATIO = 3f;
-        private const float ZOOM_STEP = 0.002f;
+        private const float ZOOM_STEP = 0.001f;
+        private const float MULTI_FRAME_TRANSLATE_Y_OFFSET = -30;
 
         private float currentRatio = 1.0f;
         private Point startZoomPoint;
-        private bool isZoomStart = false;
+        private Point startMovePoint;
+        private ProcType procType = ProcType.None;
         private Dicom.Data.DicomFile dicomFile;
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
@@ -65,6 +67,7 @@ namespace DicomViewCtrl
             dicomFile.OpenAsDicomFile(0);
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
+            AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
             return true;
@@ -108,6 +111,7 @@ namespace DicomViewCtrl
             await dicomFile.OpenAsDicomFileAsync(0);
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
+            AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
             return true;
@@ -119,6 +123,7 @@ namespace DicomViewCtrl
             dicomFile.OpenAsRawFile(width, height, bits);
             SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
+            AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
             return true;
@@ -196,33 +201,18 @@ namespace DicomViewCtrl
             stackpanel_Window.Visibility = Visibility.Hidden;
         }
 
-        private void ZoomImage(Point point, int delta)
+        private void ZoomImage(int delta)
         {
-            if (delta == 0)
-                return;
+            double zoomFactor = delta > 0 ? 1.1 : 1 / 1.1;
+            double oldScale = scaleTransform.ScaleX;
+            double newScale = oldScale * zoomFactor;
 
-            if (delta < 0 && scaleTransform.ScaleX < MIN_ZOOMRATIO)
-                return;
+            (var deltaWidth, var deltaHeight) = GetZoomImageOffset(newScale, newScale);
 
-            if (delta > 0 && scaleTransform.ScaleX > MAX_ZOOMRATIO)
-                return;
-                   
-            var ratio = 0.0;
-            if (delta > 0)
-            {
-                ratio = scaleTransform.ScaleX * ZOOM_STEP;
-            }
-            else
-            {
-                ratio = scaleTransform.ScaleX * -ZOOM_STEP;
-    
-            }
-            scaleTransform.CenterX = this.image.ActualWidth / 2.0;
-            scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+            translateTransform.X -= deltaWidth / 2;
+            translateTransform.Y -= deltaHeight / 2;
 
-            //TODO use animation
-            scaleTransform.ScaleX += ratio;
-            scaleTransform.ScaleY = Math.Abs(scaleTransform.ScaleX);                
+            scaleTransform.ScaleX = scaleTransform.ScaleY = newScale;
         }
 
         private void ZoomImage(Point current)
@@ -254,8 +244,9 @@ namespace DicomViewCtrl
             newScaleX = Math.Max(MIN_ZOOMRATIO, Math.Min(MAX_ZOOMRATIO, newScaleX));
             newScaleY = Math.Max(MIN_ZOOMRATIO, Math.Min(MAX_ZOOMRATIO, newScaleY));
 
-            scaleTransform.CenterX = this.image.ActualWidth / 2.0;
-            scaleTransform.CenterY = this.image.ActualHeight / 2.0;
+            (var deltaWidth, var deltaHeight) = GetZoomImageOffset(newScaleX, newScaleY);
+            translateTransform.X -= deltaWidth / 2;
+            translateTransform.Y -= deltaHeight / 2;
 
             scaleTransform.ScaleX = newScaleX;
             scaleTransform.ScaleY = newScaleY;
@@ -263,30 +254,162 @@ namespace DicomViewCtrl
             startZoomPoint = current;
         }
 
-        private void Border_MouseWheel(object sender, MouseWheelEventArgs e)
+        private Tuple<double,double> GetZoomImageOffset(double newScaleX,double newScaleY)
         {
-            ZoomImage(e.GetPosition(this.image), e.Delta);
+            double imageWidthOld = this.dicomFile.Columns * scaleTransform.ScaleX;
+            double imageHeightOld = this.dicomFile.Rows * scaleTransform.ScaleY;
+
+            double imageWidthNew = this.dicomFile.Columns * newScaleX;
+            double imageHeightNew = this.dicomFile.Rows * newScaleY;
+
+            double deltaWidth = imageWidthNew - imageWidthOld;
+            double deltaHeight = imageHeightNew - imageHeightOld;
+
+            return new Tuple<double, double>(deltaWidth, deltaHeight);
         }
 
-        private void Border_MouseMove(object sender, MouseEventArgs e)
+        private void MoveImage(Point current)
         {
-            if (isZoomStart)
+            Point currentImagePos = ToImageSpace(current);
+
+            Vector deltaImage = currentImagePos - startMovePoint;
+
+            translateTransform.X += deltaImage.X * scaleTransform.ScaleX;
+            translateTransform.Y += deltaImage.Y * scaleTransform.ScaleY;
+
+            startMovePoint = ToImageSpace(current);
+        }
+
+        private Point GetTransformedCenter()
+        {
+          
+            double width = this.image.ActualWidth;
+            double height = this.image.ActualHeight;
+
+            // Original center
+            Point center = new Point(width / 2, height / 2);
+
+            // Get the RenderTransform (TransformGroup) and transform the point
+            GeneralTransform transform = this.image.TransformToAncestor((Visual)this.image.Parent);
+            Point transformedCenter = transform.Transform(center);
+
+            return transformedCenter;
+        }
+
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ZoomImage(e.Delta);
+        }
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            switch(procType)
             {
-                ZoomImage(e.GetPosition(this.grid_Host));
+                case ProcType.ZoomImage:
+                    ZoomImage(e.GetPosition(this.canvas));
+                    break;
+                case ProcType.MoveImage:
+                    MoveImage(e.GetPosition(this.canvas));
+                    break;
+                default:
+                    break;
             }
         }
 
-        private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            isZoomStart = true;
-            startZoomPoint = e.GetPosition(this.grid_Host);
-            this.grid_Host.CaptureMouse();
+            procType = ProcType.ZoomImage;
+            startZoomPoint = e.GetPosition(this.canvas);
+            this.canvas.CaptureMouse();
         }
 
-        private void Grid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            isZoomStart = false;
-            this.grid_Host.ReleaseMouseCapture();
+            procType = ProcType.None;
+            this.canvas.ReleaseMouseCapture();
+        }
+
+        private void AutoFit()
+        {
+            AutoSize();
+            AutoPos();
+        }
+
+        private void AutoSize()
+        {
+            if (this.dicomFile.Rows < this.canvas.ActualHeight
+                && this.dicomFile.Columns < this.canvas.ActualWidth)
+            {
+                scaleTransform.ScaleX = 1;
+                scaleTransform.ScaleY = 1;
+                return;
+            }
+
+            double scale = 1;
+
+            if (this.dicomFile.Columns > this.dicomFile.Rows)
+            {
+                scale = this.canvas.ActualHeight / this.dicomFile.Rows;
+            }
+            else
+            {
+                scale = this.canvas.ActualWidth / this.dicomFile.Columns;
+
+            }
+
+            this.scaleTransform.CenterX = 0;
+            this.scaleTransform.CenterY = 0;
+
+            this.scaleTransform.ScaleX = scale;
+            this.scaleTransform.ScaleY = scale;
+        }
+
+        private void AutoPos()
+        {
+            var translatex = (this.canvas.ActualWidth - (this.dicomFile.Columns * this.scaleTransform.ScaleX) ) / 2;
+            var translatey = (this.canvas.ActualHeight - (this.dicomFile.Rows * this.scaleTransform.ScaleY)) / 2;
+            var yOffset = this.dicomFile.NumberOfFrames > 1 ? MULTI_FRAME_TRANSLATE_Y_OFFSET : 0;
+
+            this.translateTransform.X = translatex;
+            this.translateTransform.Y = translatey + yOffset;
+        }
+
+        private void canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            procType = ProcType.MoveImage;
+            this.Cursor = Cursors.ScrollAll;
+            var canvasPoint = e.GetPosition(this.canvas);
+            startMovePoint = ToImageSpace(canvasPoint);
+            this.canvas.CaptureMouse();
+        }
+
+        private void canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            procType = ProcType.None;
+            this.Cursor = Cursors.Arrow;
+            this.canvas.ReleaseMouseCapture();
+        }
+
+        private Point ToImageSpace(Point canvasPoint)
+        {
+            return new Point((canvasPoint.X - translateTransform.X) / scaleTransform.ScaleX,(canvasPoint.Y - translateTransform.Y) / scaleTransform.ScaleY);
+        }
+
+
+        Label label;
+
+        private void canvas_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (label == null)
+            {
+                label = new Label();
+                label.Foreground = Brushes.White;
+                this.canvas.Children.Add(label);
+            }
+            else
+            {
+                label.Content = $"Width = {this.canvas.ActualWidth} Height = {this.canvas.ActualHeight}";
+            }
         }
     }
 }
