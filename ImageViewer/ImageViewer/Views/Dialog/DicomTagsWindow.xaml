@@ -1,0 +1,28 @@
+﻿<controls:CustomWindow x:Class="ImageViewer.Views.Dialog.DicomTagsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
+        xmlns:controls="clr-namespace:ImageViewer.Controls"
+        mc:Ignorable="d"
+        Title="Dicom Tags" Height="450" Width="800" WindowStartupLocation="CenterScreen" BorderThickness="1" BorderBrush="White" SizeChanged="CustomWindow_SizeChanged">
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Content="搜索关键字" Foreground="White" VerticalAlignment="Center"></Label>
+        <ListView Grid.Row="1" Style="{StaticResource ListViewStyle}" Name="list_DicomTags">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Group" Width="60"></GridViewColumn>
+                    <GridViewColumn Header="Element" Width="60"></GridViewColumn>
+                    <GridViewColumn Header="Description" Width="300"></GridViewColumn>
+                    <GridViewColumn Header="Value" Width="300"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</controls:CustomWindow>

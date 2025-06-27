@@ -11,21 +11,29 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="48"/>
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0" ItemContainerStyle="{StaticResource MenuItemStyle}" Background="Black" BorderThickness="0.5" BorderBrush="Silver">
-            <MenuItem Header="文件">
+            <MenuItem Header="文件" Width="50">
                 <MenuItem Header="打开Dicom" Click="Open_Click"/>
                 <MenuItem Header="打开Dicom文件夹" Click="OpenDicomDirectory_Click"></MenuItem>
                 <MenuItem Header="打开Raw" Click="OpenRaw_Click"/>
                 <Separator></Separator>
                 <MenuItem Header="退出" Click="Exit"/>
             </MenuItem>
+            <MenuItem Header="查看" Width="50">
+                <MenuItem Header="查看Dicom标签"></MenuItem>
+            </MenuItem>
         </Menu>
 
-        <Grid Grid.Row="1" Background="Black">
+        <ToolBar Grid.Row="1" Background="Black">
+            <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconDicomTag}" ToolTip="Dicom Tags" x:Name="btn_DicomTags" Click="btn_DicomTags_Click"></localcontrols:ImageButton>
+        </ToolBar>
+        
+        <Grid Grid.Row="2" Background="Black">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="4*"/>

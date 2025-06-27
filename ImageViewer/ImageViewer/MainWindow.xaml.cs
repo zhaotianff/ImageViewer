@@ -299,5 +299,11 @@ namespace ImageViewer
         {
             Pause();
         }
+
+        private void btn_DicomTags_Click(object sender, RoutedEventArgs e)
+        {
+            DicomTagsWindow dicomTagsWindow = new DicomTagsWindow();
+            dicomTagsWindow.ShowDialog();
+        }
     }
 }

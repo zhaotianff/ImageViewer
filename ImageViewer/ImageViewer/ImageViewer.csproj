@@ -72,6 +72,9 @@
     <Compile Include="Util\EnumHelper.cs" />
     <Compile Include="Util\TreeHelper.cs" />
     <Compile Include="Util\WindowHelper.cs" />
+    <Compile Include="Views\Dialog\DicomTagsWindow.xaml.cs">
+      <DependentUpon>DicomTagsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialog\InputImageSizeWindow.xaml.cs">
       <DependentUpon>InputImageSizeWindow.xaml</DependentUpon>
     </Compile>
@@ -101,6 +104,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles\ListViewStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\MenuStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -112,6 +119,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\DicomTagsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialog\InputImageSizeWindow.xaml">
       <SubType>Designer</SubType>
