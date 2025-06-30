@@ -281,6 +281,7 @@
         <Setter Property="FontSize" Value="12"></Setter>
         <Setter Property="VerticalAlignment" Value="Center"></Setter>
         <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
         <Setter Property="Foreground" Value="White"></Setter>
         <Setter Property="Template">
             <Setter.Value>
@@ -298,12 +299,12 @@
                             Storyboard.TargetProperty="(Panel.Background).
 (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                     Value="Black" />
+                     Value="White" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).
 (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                     Value="White" />
+                     Value="Black" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -317,12 +318,12 @@
                                             Storyboard.TargetProperty="(Panel.Background).
                 (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                                     Value="Black" />
+                                     Value="White" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).
 (SolidColorBrush.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                     Value="White" />
+                     Value="Black" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>

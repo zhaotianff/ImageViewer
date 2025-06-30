@@ -38,6 +38,17 @@ namespace DicomViewCtrl
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
 
+        private ObservableCollection<DicomTagWithValue> dicomTags;
+
+        public ObservableCollection<DicomTagWithValue> DicomTags
+        {
+            get
+            {
+                ReadAllDicomTags();
+                return dicomTags;
+            }
+        }
+
         public bool HasImage { get; set; } = false;       
 
         public int FrameIndex
@@ -70,6 +81,7 @@ namespace DicomViewCtrl
             AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
+            ResetImageViewStatus();
             return true;
         }
 
@@ -78,7 +90,17 @@ namespace DicomViewCtrl
             DicomFile localDicomFile = new DicomFile(dicomFilePath);
             localDicomFile.OpenAsPrefetch();
             AddToImageList(localDicomFile);
+            ResetImageViewStatus();
             return true;
+        }
+
+        private void ResetImageViewStatus()
+        {
+            if (this.dicomTags != null)
+            {
+                dicomTags.Clear();
+                dicomTags = null;
+            }
         }
 
         public bool FetchFrame(int imageIndex,int frameIndex)
@@ -114,6 +136,7 @@ namespace DicomViewCtrl
             AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
+            ResetImageViewStatus();
             return true;
         }
 
@@ -126,6 +149,7 @@ namespace DicomViewCtrl
             AutoFit();
             HasImage = true;
             AddToImageList(dicomFile);
+            ResetImageViewStatus();
             return true;
         }
 
@@ -393,6 +417,26 @@ namespace DicomViewCtrl
         private Point ToImageSpace(Point canvasPoint)
         {
             return new Point((canvasPoint.X - translateTransform.X) / scaleTransform.ScaleX,(canvasPoint.Y - translateTransform.Y) / scaleTransform.ScaleY);
+        }
+
+        private void ReadAllDicomTags()
+        {
+            if (this.dicomFile == null || this.dicomTags != null)
+                return;
+
+            dicomTags = new ObservableCollection<DicomTagWithValue>();
+
+            foreach (var item in this.dicomFile.DataSet)
+            {
+                dicomTags.Add(new DicomTagWithValue()
+                {
+                    Group = item.Tag.Group,
+                    Element = item.Tag.Element,
+                    Description = item.Tag.DictionaryEntry.Name,
+                    Value = this.dicomFile.DataSet.GetSingleValueOrDefault<object>(item.Tag, null),
+                    ValueRepresentation = item.ValueRepresentation.Name
+                });
+            }
         }
     }
 }

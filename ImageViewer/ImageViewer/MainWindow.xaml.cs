@@ -302,7 +302,7 @@ namespace ImageViewer
 
         private void btn_DicomTags_Click(object sender, RoutedEventArgs e)
         {
-            DicomTagsWindow dicomTagsWindow = new DicomTagsWindow();
+            DicomTagsWindow dicomTagsWindow = new DicomTagsWindow(this.imgview.DicomTags);
             dicomTagsWindow.ShowDialog();
         }
     }

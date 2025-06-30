@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,28 +20,26 @@ namespace ImageViewer.Views.Dialog
     /// </summary>
     public partial class DicomTagsWindow : Controls.CustomWindow
     {
-        public DicomTagsWindow()
+        public DicomTagsWindow(ObservableCollection<DicomViewCtrl.Dicom.Data.DicomTagWithValue> dicomTags)
         {
             InitializeComponent();
 
-           
-            this.list_DicomTags.ItemsSource = new List<string>() { "sdfdsfdsf"};
+            this.list_DicomTags.ItemsSource = dicomTags;
         }
 
-        private void AutoSizeColumns()
+        private void AutoSizeColumns(double width)
         {
-            var width = this.Width;
             var gridView = list_DicomTags.View as GridView;
 
             gridView.Columns[0].Width = width * 0.15;
             gridView.Columns[1].Width = width * 0.15;
-            gridView.Columns[2].Width = width * 0.3;
-            gridView.Columns[3].Width = width * 0.3;
+            gridView.Columns[2].Width = width * 0.33;
+            gridView.Columns[3].Width = width * 0.33;
         }
 
         private void CustomWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            AutoSizeColumns();
+            AutoSizeColumns(e.NewSize.Width);
         }
     }
 }

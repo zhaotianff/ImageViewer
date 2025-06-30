@@ -60,6 +60,8 @@ namespace DicomViewCtrl.Dicom.Data
 
         public int FrameIndex { get; private set; } = 0;
 
+        internal FellowOakDicom.DicomDataset DataSet => this.dicomFile?.Dataset;
+
 
         static DicomFile()
         {

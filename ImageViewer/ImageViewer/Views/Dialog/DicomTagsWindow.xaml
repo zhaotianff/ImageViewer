@@ -17,10 +17,10 @@
         <ListView Grid.Row="1" Style="{StaticResource ListViewStyle}" Name="list_DicomTags">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Group" Width="60"></GridViewColumn>
-                    <GridViewColumn Header="Element" Width="60"></GridViewColumn>
-                    <GridViewColumn Header="Description" Width="300"></GridViewColumn>
-                    <GridViewColumn Header="Value" Width="300"></GridViewColumn>
+                    <GridViewColumn Header="Group" DisplayMemberBinding="{Binding Group}"></GridViewColumn>
+                    <GridViewColumn Header="Element" DisplayMemberBinding="{Binding Element}"></GridViewColumn>
+                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"></GridViewColumn>
+                    <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
