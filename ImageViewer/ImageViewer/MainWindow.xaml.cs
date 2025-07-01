@@ -305,5 +305,13 @@ namespace ImageViewer
             DicomTagsWindow dicomTagsWindow = new DicomTagsWindow(this.imgview.DicomTags);
             dicomTagsWindow.ShowDialog();
         }
+
+        private void imgview_OnFrameChanged(object sender, DicomViewCtrl.Viewer.Event.FrameChangedEventArgs e)
+        {
+            this.list_FrameList.SelectionChanged -= this.list_FrameList_SelectionChanged;
+            this.list_FrameList.SelectedIndex = e.FrameIndex;
+            this.list_FrameList.ScrollIntoView(this.list_FrameList.SelectedItem);
+            this.list_FrameList.SelectionChanged += this.list_FrameList_SelectionChanged;
+        }
     }
 }

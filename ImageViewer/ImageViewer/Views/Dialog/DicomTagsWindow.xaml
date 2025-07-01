@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
         xmlns:controls="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
-        Title="Dicom Tags" Height="450" Width="800" WindowStartupLocation="CenterScreen" BorderThickness="1" BorderBrush="White" SizeChanged="CustomWindow_SizeChanged">
+        Title="Dicom Tags" Height="550" Width="900" WindowStartupLocation="CenterScreen" BorderThickness="1" BorderBrush="White" SizeChanged="CustomWindow_SizeChanged">
     <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -19,6 +19,7 @@
                 <GridView>
                     <GridViewColumn Header="Group" DisplayMemberBinding="{Binding Group,StringFormat='0x{0:X2}'}"></GridViewColumn>
                     <GridViewColumn Header="Element" DisplayMemberBinding="{Binding Element,StringFormat='0x{0:X2}'}"></GridViewColumn>
+                    <GridViewColumn Header="VR" DisplayMemberBinding="{Binding ValueRepresentation}"></GridViewColumn>
                     <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"></GridViewColumn>
                     <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}"></GridViewColumn>
                 </GridView>

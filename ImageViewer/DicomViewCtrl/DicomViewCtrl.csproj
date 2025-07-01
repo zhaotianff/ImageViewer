@@ -155,7 +155,10 @@
     <Compile Include="Util\WinAPI.cs" />
     <Compile Include="Viewer\Data\DicomImage.cs" />
     <Compile Include="Viewer\Data\FrameImage.cs" />
+    <Compile Include="Viewer\Data\MouseWheelMode.cs" />
     <Compile Include="Viewer\Data\ProcType.cs" />
+    <Compile Include="Viewer\Event\FrameChangedEvent.cs" />
+    <Compile Include="Viewer\Event\FrameChangedEventArgs.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -31,10 +31,11 @@ namespace ImageViewer.Views.Dialog
         {
             var gridView = list_DicomTags.View as GridView;
 
-            gridView.Columns[0].Width = width * 0.15;
-            gridView.Columns[1].Width = width * 0.15;
-            gridView.Columns[2].Width = width * 0.33;
-            gridView.Columns[3].Width = width * 0.33;
+            gridView.Columns[0].Width = 65;
+            gridView.Columns[1].Width = 65;
+            gridView.Columns[2].Width = 35;
+            gridView.Columns[3].Width = (width - 130) * 0.3;
+            gridView.Columns[4].Width = (width -130) * 0.7;
         }
 
         private void CustomWindow_SizeChanged(object sender, SizeChangedEventArgs e)

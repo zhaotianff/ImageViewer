@@ -35,10 +35,17 @@ namespace DicomViewCtrl
         private Point startMovePoint;
         private ProcType procType = ProcType.None;
         private Dicom.Data.DicomFile dicomFile;
+        private MouseWheelMode mouseWheelMode = MouseWheelMode.SwitchFrame;
+        private int frameImageIndex = -1;
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
 
         private ObservableCollection<DicomTagWithValue> dicomTags;
+
+        /// <summary>
+        /// Occurs when frame changed(mouse wheel scroll)
+        /// </summary>
+        public event Viewer.Event.FrameChangedEvent.FrameChangedEventHandler OnFrameChanged;
 
         public ObservableCollection<DicomTagWithValue> DicomTags
         {
@@ -117,7 +124,7 @@ namespace DicomViewCtrl
             if (this.ImageList[imageIndex].FrameList[frameIndex].FrameThumbnail == null)
             {
                 this.ImageList[imageIndex].FrameList[frameIndex].FrameThumbnail = dicomFile.ThumbnailImage;
-            }     
+            }
 
             return true;
         }
@@ -155,8 +162,12 @@ namespace DicomViewCtrl
 
         private void AddToImageList(DicomFile dicomFile)
         {
-            if (this.ImageList.FirstOrDefault(x => x.SopInstanceUID == dicomFile.SopInstanceUID) != null)
+            var checkDicomFile = this.ImageList.FirstOrDefault(x => x.SopInstanceUID == dicomFile.SopInstanceUID);
+            if (checkDicomFile != null)
+            {
+                SelectFrameImage(this.ImageList.IndexOf(checkDicomFile));
                 return;
+            }
 
             DicomImage dicomImage = new DicomImage();
             dicomImage.FilePath = dicomFile.FilePath;
@@ -173,6 +184,7 @@ namespace DicomViewCtrl
             FetchAllFrames(dicomFile, dicomImage);
 
             DispatcherHelper.DispatherInvoke(() => { this.ImageList.Add(dicomImage); });
+            SelectFrameImage(this.ImageList.Count - 1);
         }
 
         private void FetchAllFrames(DicomFile dicomFile, DicomImage dicomImage)
@@ -184,6 +196,18 @@ namespace DicomViewCtrl
                 Select(x => new FrameImage() { FrameIndex = x, FrameThumbnail = null }));
 
             dicomImage.FrameList[0].FrameThumbnail = dicomFile.ThumbnailImage;
+
+            ResetFrameImageSelectedIndex();
+        }
+
+        private void ResetFrameImageSelectedIndex()
+        {
+            frameImageIndex = -1;
+        }
+
+        private void SelectFrameImage(int imageIndex)
+        {
+            frameImageIndex = imageIndex;
         }
 
 
@@ -227,6 +251,8 @@ namespace DicomViewCtrl
 
         private void ZoomImage(int delta)
         {
+            CheckImageOpenStatus();
+
             double zoomFactor = delta > 0 ? 1.1 : 1 / 1.1;
             double oldScale = scaleTransform.ScaleX;
             double newScale = oldScale * zoomFactor;
@@ -241,6 +267,8 @@ namespace DicomViewCtrl
 
         private void ZoomImage(Point current)
         {
+            CheckImageOpenStatus();
+
             Vector delta = current - startZoomPoint;
 
             double dx = delta.X;
@@ -294,6 +322,8 @@ namespace DicomViewCtrl
 
         private void MoveImage(Point current)
         {
+            CheckImageOpenStatus();
+
             Point currentImagePos = ToImageSpace(current);
 
             Vector deltaImage = currentImagePos - startMovePoint;
@@ -322,7 +352,17 @@ namespace DicomViewCtrl
 
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ZoomImage(e.Delta);
+            switch (mouseWheelMode)
+            {
+                case MouseWheelMode.SwitchFrame:
+                    SwitchFrame(e.Delta);
+                    break;
+                case MouseWheelMode.Zoom:
+                    ZoomImage(e.Delta);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
@@ -434,9 +474,63 @@ namespace DicomViewCtrl
                     Element = item.Tag.Element,
                     Description = item.Tag.DictionaryEntry.Name,
                     Value = this.dicomFile.DataSet.GetSingleValueOrDefault<object>(item.Tag, null),
-                    ValueRepresentation = item.ValueRepresentation.Name
+                    ValueRepresentation = item.ValueRepresentation.Code
                 });
             }
+        }
+
+        public void SetMouseWheelMode(MouseWheelMode wheelMode)
+        {
+            this.mouseWheelMode = wheelMode;
+        }
+
+        private void SwitchFrame(int delta)
+        {
+            CheckImageOpenStatus();
+
+            //TODO
+            //Update to
+            //ImageChangedEvent
+            if (delta < 0)
+            {
+                SwitchNextFrame();
+            }
+            else
+            {
+                SwitchPreviousFrame();
+            }            
+        }
+
+        private void SwitchNextFrame()
+        {
+            int nextFrameIndex = 0;
+
+            if (this.FrameIndex != this.ImageList[frameImageIndex].FrameList.Count - 1)
+            {
+                nextFrameIndex = this.FrameIndex + 1;
+            }
+
+            FetchFrame(this.frameImageIndex, nextFrameIndex);
+            OnFrameChanged?.Invoke(this, new Viewer.Event.FrameChangedEventArgs(nextFrameIndex, frameImageIndex));
+        }
+
+        private void SwitchPreviousFrame()
+        {
+            int previousFrameIndex = this.dicomFile.NumberOfFrames - 1;
+            
+            if (this.FrameIndex != 0)
+            {
+                previousFrameIndex = this.FrameIndex - 1;
+            }
+
+            FetchFrame(this.frameImageIndex, previousFrameIndex);
+            OnFrameChanged?.Invoke(this, new Viewer.Event.FrameChangedEventArgs(previousFrameIndex, frameImageIndex));
+        }
+
+        private void CheckImageOpenStatus()
+        {
+            if (this.HasImage == false)
+                throw new Exception("Not open dicom image yet.");
         }
     }
 }
