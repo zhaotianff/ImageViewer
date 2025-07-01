@@ -6,12 +6,13 @@
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:ctrl="clr-namespace:DicomViewCtrl;assembly=DicomViewCtrl"
         xmlns:localcontrols="clr-namespace:ImageViewer.Controls"
+        xmlns:uc="clr-namespace:ImageViewer.Controls.UserControls"
         mc:Ignorable="d"
         Title="FF Dicom Viewer" Height="720" Width="1280" WindowStartupLocation="CenterScreen" Closing="CustomWindow_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="68"/>
             <RowDefinition/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
@@ -25,12 +26,21 @@
                 <MenuItem Header="退出" Click="Exit"/>
             </MenuItem>
             <MenuItem Header="查看" Width="50">
-                <MenuItem Header="查看Dicom标签"></MenuItem>
+                <MenuItem Header="查看Dicom标签" Click="btn_DicomTags_Click"></MenuItem>
             </MenuItem>
         </Menu>
 
         <ToolBar Grid.Row="1" Background="Black">
-            <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconDicomTag}" ToolTip="Dicom Tags" x:Name="btn_DicomTags" Click="btn_DicomTags_Click"></localcontrols:ImageButton>
+            <GroupBox Header="操作" Foreground="White" BorderThickness="0,0,0.5,0" Margin="3,0,3,0">
+                <DockPanel>
+                    <uc:DropDownButton ToolTip="鼠标滚轮模式" x:Name="btn_MouseWheel"></uc:DropDownButton>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="查看" Foreground="White" BorderThickness="0,0,0.5,0">
+                <DockPanel>
+                    <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconDicomTag}" ToolTip="Dicom Tags" x:Name="btn_DicomTags" Click="btn_DicomTags_Click"></localcontrols:ImageButton>
+                </DockPanel>
+            </GroupBox>
         </ToolBar>
         
         <Grid Grid.Row="2" Background="Black">

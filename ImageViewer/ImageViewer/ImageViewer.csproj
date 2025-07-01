@@ -63,6 +63,9 @@
     </ApplicationDefinition>
     <Compile Include="Controls\CustomWindow.cs" />
     <Compile Include="Controls\ImageButton.cs" />
+    <Compile Include="Controls\UserControls\DropDownButton.xaml.cs">
+      <DependentUpon>DropDownButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Attributes\DisplayName.cs" />
     <Compile Include="Infrastructure\Definitions\FpsType.cs" />
@@ -80,6 +83,10 @@
     </Compile>
     <Compile Include="Win32\Shell32.cs" />
     <Compile Include="Win32\User32.cs" />
+    <Page Include="Controls\UserControls\DropDownButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -164,9 +171,7 @@
       <Name>DicomViewCtrl</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\UserControls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="logo.ico" />
   </ItemGroup>
