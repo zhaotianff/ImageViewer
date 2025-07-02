@@ -18,8 +18,8 @@
         <localcontrols:ImageButton Width="20" Height="40" Content="{DynamicResource IconDropDown}" Grid.Column="1" Click="btn_Drop_Click"></localcontrols:ImageButton>
 
         <Popup PlacementTarget="{Binding ElementName=btn_DropDown}" Placement="Bottom" Name="popup">
-            <Grid Background="Black" Name="grid_PopupHost">
-                <localcontrols:ImageButton Width="40" Height="40" Content="{DynamicResource IconZoom}" IsEnabled="True"></localcontrols:ImageButton>
+            <Grid>
+                <Menu Name="menu" ItemContainerStyle="{StaticResource MenuItemStyle}"></Menu>
             </Grid>
         </Popup>
     </Grid>

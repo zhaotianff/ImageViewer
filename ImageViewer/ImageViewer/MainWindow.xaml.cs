@@ -19,6 +19,8 @@ using ImageViewer.Util;
 using ImageViewer.Views.Dialog;
 using ImageViewer.Infrastructure.Definitions;
 using ImageViewer.Infrastructure.Attributes;
+using ImageViewer.Controls;
+using ImageViewer.Controls.UserControls;
 
 namespace ImageViewer
 {
@@ -34,7 +36,25 @@ namespace ImageViewer
         {
             InitializeComponent();
 
+            InitializeUI();
+        }
+
+        private void InitializeUI()
+        {
             this.list_ImageList.ItemsSource = imgview.ImageList;
+
+            InitializeToolBar();
+        }
+
+        private void InitializeToolBar()
+        {
+            List<DropDownButtonData> mouseWheelButtonList = new List<DropDownButtonData>()
+            {
+                new DropDownButtonData(){DisplayName = "切换帧",Handler = x=>{this.imgview.SetMouseWheelMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.SwitchFrame);  },IconName = "IconMouseWheel" },
+                new DropDownButtonData(){DisplayName = "缩放",Handler = x=>{this.imgview.SetMouseWheelMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.Zoom);  },IconName = "IconZoom" }
+            };
+            this.btn_MouseWheel.DropdownButtons = mouseWheelButtonList;
+            this.btn_MouseWheel.SelectDropDownListItem(0);
         }
 
         private void Exit(object sender, RoutedEventArgs e)

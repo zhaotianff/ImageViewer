@@ -66,6 +66,7 @@
     <Compile Include="Controls\UserControls\DropDownButton.xaml.cs">
       <DependentUpon>DropDownButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserControls\DropDownButtonData.cs" />
     <Compile Include="Converters\BooleanVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Attributes\DisplayName.cs" />
     <Compile Include="Infrastructure\Definitions\FpsType.cs" />

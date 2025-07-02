@@ -20,6 +20,45 @@ namespace ImageViewer.Controls.UserControls
     /// </summary>
     public partial class DropDownButton : UserControl
     {
+        private List<DropDownButtonData> dropdownButtons = new List<DropDownButtonData>();
+
+        public List<DropDownButtonData> DropdownButtons
+        {
+            get => dropdownButtons;
+            set
+            {
+                dropdownButtons = value;
+                UpdateDrowDownList();
+            }
+        }
+
+        private void UpdateDrowDownList()
+        {
+            menu.Items.Clear();
+
+            for (int i = 0; i < this.DropdownButtons.Count; i++)
+            {
+                var dropDownButtonData = this.DropdownButtons[i];
+                MenuItem menuItem = new MenuItem();
+                menuItem.Width = 80;
+                menuItem.Header = dropDownButtonData.DisplayName;
+                var index = i;
+                menuItem.Click += (sender, args) => 
+                {
+                    SelectDropDownListItem(index);
+                    dropDownButtonData.Handler?.Invoke(null);
+                };
+                this.menu.Items.Add(menuItem);
+            }
+        }
+
+        public void SelectDropDownListItem(int index)
+        {
+            var dropDownButtonData = this.DropdownButtons[index];
+            this.btn_DropDown.Content = Application.Current.FindResource(dropDownButtonData.IconName);
+            this.popup.IsOpen = false;
+        }
+
         public DropDownButton()
         {
             InitializeComponent();
