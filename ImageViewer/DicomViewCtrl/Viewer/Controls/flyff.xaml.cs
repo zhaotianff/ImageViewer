@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Resources;
 using System.Windows.Shapes;
 
 namespace DicomViewCtrl
@@ -36,6 +37,7 @@ namespace DicomViewCtrl
         private ProcType procType = ProcType.None;
         private Dicom.Data.DicomFile dicomFile;
         private MouseWheelMode mouseWheelMode = MouseWheelMode.SwitchFrame;
+        private MouseLeftButtonMode mouseLeftButtonMode = MouseLeftButtonMode.Move;
         private int frameImageIndex = -1;
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
@@ -350,6 +352,11 @@ namespace DicomViewCtrl
             return transformedCenter;
         }
 
+        private void SetImageWL()
+        {
+
+        }
+
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             switch (mouseWheelMode)
@@ -374,6 +381,9 @@ namespace DicomViewCtrl
                     break;
                 case ProcType.MoveImage:
                     MoveImage(e.GetPosition(this.canvas));
+                    break;
+                case ProcType.SetWL:
+                    SetImageWL();
                     break;
                 default:
                     break;
@@ -440,6 +450,19 @@ namespace DicomViewCtrl
 
         private void canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            switch(mouseLeftButtonMode)
+            {
+                case MouseLeftButtonMode.Move:
+                    CaptureMouseMove(e);
+                    break;
+                case MouseLeftButtonMode.SetWL:
+                    CaptureMouseSetWL(e);
+                    break;
+            }
+        }
+
+        private void CaptureMouseMove(MouseButtonEventArgs e)
+        {
             procType = ProcType.MoveImage;
             this.Cursor = Cursors.ScrollAll;
             var canvasPoint = e.GetPosition(this.canvas);
@@ -447,7 +470,42 @@ namespace DicomViewCtrl
             this.canvas.CaptureMouse();
         }
 
+        private void CaptureMouseSetWL(MouseButtonEventArgs e)
+        {
+            procType = ProcType.SetWL;
+            Uri resourceUri = new Uri("pack://application:,,,/DicomViewCtrl;component/Resources/cur/setwl.cur");
+            StreamResourceInfo resourceInfo = Application.GetResourceStream(resourceUri);
+            using(System.IO.Stream stream = resourceInfo.Stream)
+            {
+                this.Cursor = new Cursor(stream);
+            }
+            
+            var canvasPoint = e.GetPosition(this.canvas);
+            startMovePoint = ToImageSpace(canvasPoint);
+            this.canvas.CaptureMouse();
+        }
+
         private void canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+           switch(mouseLeftButtonMode)
+            {
+                case MouseLeftButtonMode.Move:
+                    ReleaseMouseMoveCapture();
+                    break;
+                case MouseLeftButtonMode.SetWL:
+                    ReleaseMouseSetWLCapture();
+                    break;
+            }
+        }
+
+        private void ReleaseMouseMoveCapture()
+        {
+            procType = ProcType.None;
+            this.Cursor = Cursors.Arrow;
+            this.canvas.ReleaseMouseCapture();
+        }
+
+        private void ReleaseMouseSetWLCapture()
         {
             procType = ProcType.None;
             this.Cursor = Cursors.Arrow;
@@ -484,9 +542,17 @@ namespace DicomViewCtrl
             this.mouseWheelMode = wheelMode;
         }
 
+        public void SetMouseLeftButtonMode(MouseLeftButtonMode mouseLeftButtonMode)
+        {
+            this.mouseLeftButtonMode = mouseLeftButtonMode;
+        }
+
         private void SwitchFrame(int delta)
         {
             CheckImageOpenStatus();
+
+            if (this.dicomFile.NumberOfFrames <= 1)
+                return;
 
             //TODO
             //Update to

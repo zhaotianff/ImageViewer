@@ -15,11 +15,21 @@
 
         <localcontrols:ImageButton Width="40" Height="40" Content="{DynamicResource IconHand}" IsEnabled="True" x:Name="btn_DropDown"></localcontrols:ImageButton>
 
-        <localcontrols:ImageButton Width="20" Height="40" Content="{DynamicResource IconDropDown}" Grid.Column="1" Click="btn_Drop_Click"></localcontrols:ImageButton>
+        <localcontrols:ImageButton Width="20" Height="40" Grid.Column="1" Click="btn_Drop_Click">
+            <localcontrols:ImageButton.Content>
+                <Path Data="{StaticResource IconDropDownData}" Width="20" Height="48" Stretch="Uniform" Fill="White"></Path>
+            </localcontrols:ImageButton.Content>
+        </localcontrols:ImageButton>
 
         <Popup PlacementTarget="{Binding ElementName=btn_DropDown}" Placement="Bottom" Name="popup">
             <Grid>
-                <Menu Name="menu" ItemContainerStyle="{StaticResource MenuItemStyle}"></Menu>
+                <Menu Name="menu" ItemContainerStyle="{StaticResource MenuItemStyle}">
+                    <Menu.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </Menu.ItemsPanel>
+                </Menu>
             </Grid>
         </Popup>
     </Grid>

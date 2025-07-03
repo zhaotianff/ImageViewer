@@ -55,6 +55,14 @@ namespace ImageViewer
             };
             this.btn_MouseWheel.DropdownButtons = mouseWheelButtonList;
             this.btn_MouseWheel.SelectDropDownListItem(0);
+
+            List<DropDownButtonData> mouseLeftButtonList = new List<DropDownButtonData>()
+            {
+                 new DropDownButtonData(){DisplayName = "移动",Handler = x=>{this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Move);  },IconName = "IconHand" },
+                new DropDownButtonData(){DisplayName = "窗宽窗位",Handler = x=>{this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.SetWL);  },IconName = "IconWL" }
+            };
+            this.btn_MouseLeftButton.DropdownButtons = mouseLeftButtonList;
+            this.btn_MouseLeftButton.SelectDropDownListItem(0);
         }
 
         private void Exit(object sender, RoutedEventArgs e)

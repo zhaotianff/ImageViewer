@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace DicomViewCtrl.Viewer.Data
 {
-    public enum ProcType
+    public enum MouseLeftButtonMode
     {
-        None,
-        MoveImage,
-        ZoomImage,
+        Move,
         SetWL
     }
 }
