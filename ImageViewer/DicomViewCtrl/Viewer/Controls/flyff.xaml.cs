@@ -31,9 +31,13 @@ namespace DicomViewCtrl
         private const float ZOOM_STEP = 0.001f;
         private const float MULTI_FRAME_TRANSLATE_Y_OFFSET = -30;
 
+        private const int SET_WL_Delta_8Bit = 2;
+        private const int SET_WL_Delta_16Bit = 8;
+
         private float currentRatio = 1.0f;
         private Point startZoomPoint;
         private Point startMovePoint;
+        private Point startWLPoint;
         private ProcType procType = ProcType.None;
         private Dicom.Data.DicomFile dicomFile;
         private MouseWheelMode mouseWheelMode = MouseWheelMode.SwitchFrame;
@@ -68,6 +72,17 @@ namespace DicomViewCtrl
                     return dicomFile.FrameIndex;
 
                 return -1;
+            }
+        }
+
+        private int SetWLDelta
+        {
+            get
+            {
+                if (this.dicomFile.BitsStored <= 8)
+                    return SET_WL_Delta_8Bit;
+
+                return SET_WL_Delta_16Bit;
             }
         }
 
@@ -237,6 +252,8 @@ namespace DicomViewCtrl
 
         private void SetWindowInfo(double ww,double wl)
         {
+            this.dicomFile.UpdateWindowWidthAndLevel(ref ww, ref wl);
+
             this.lbl_WL.Content = $"WL:{wl}";
             this.lbl_WW.Content = $"WW:{ww}";
         }
@@ -352,9 +369,16 @@ namespace DicomViewCtrl
             return transformedCenter;
         }
 
-        private void SetImageWL()
+        private void SetImageWL(Point current)
         {
+            var delta = current - startWLPoint;
+            this.startWLPoint = current;
 
+            var newWW = this.dicomFile.WindowWidth + (int)delta.X * this.SetWLDelta;
+            var newWL = this.dicomFile.WindowCenter + (int)delta.Y * this.SetWLDelta;
+
+            SetWindowInfo(newWW, newWL);
+            this.image.Source = this.dicomFile.PreviewImage;
         }
 
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -383,7 +407,7 @@ namespace DicomViewCtrl
                     MoveImage(e.GetPosition(this.canvas));
                     break;
                 case ProcType.SetWL:
-                    SetImageWL();
+                    SetImageWL(e.GetPosition(this.canvas));
                     break;
                 default:
                     break;
@@ -479,9 +503,8 @@ namespace DicomViewCtrl
             {
                 this.Cursor = new Cursor(stream);
             }
-            
-            var canvasPoint = e.GetPosition(this.canvas);
-            startMovePoint = ToImageSpace(canvasPoint);
+
+            this.startWLPoint = e.GetPosition(this.canvas);
             this.canvas.CaptureMouse();
         }
 
@@ -510,6 +533,17 @@ namespace DicomViewCtrl
             procType = ProcType.None;
             this.Cursor = Cursors.Arrow;
             this.canvas.ReleaseMouseCapture();
+            RefreshImageListThumbnail();
+        }
+
+        private void RefreshImageListThumbnail()
+        {
+            this.dicomFile.ManualUpdateThumbnail();
+
+            if (this.dicomFile.FrameIndex == 0)
+            {
+                this.ImageList[frameImageIndex].Thumbnail = this.dicomFile.ThumbnailImage;
+            }
         }
 
         private Point ToImageSpace(Point canvasPoint)

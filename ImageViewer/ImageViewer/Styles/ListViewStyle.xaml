@@ -222,7 +222,7 @@
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
-                                    <Storyboard>
+                                    <!--<Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
                             Storyboard.TargetProperty="(Panel.Background).
 (SolidColorBrush.Color)">
@@ -234,7 +234,7 @@
                                             <EasingColorKeyFrame KeyTime="0"
                      Value="Black" />
                                         </ColorAnimationUsingKeyFrames>
-                                    </Storyboard>
+                                    </Storyboard>-->
                                 </VisualState>
                                 <VisualState x:Name="Disabled" />
                             </VisualStateGroup>

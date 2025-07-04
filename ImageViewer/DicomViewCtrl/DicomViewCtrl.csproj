@@ -133,6 +133,7 @@
     <Compile Include="Dicom\Data\DicomInfo.cs" />
     <Compile Include="Dicom\Data\DicomTagWithValue.cs" />
     <Compile Include="Dicom\Process\DicomImageProcessor.cs" />
+    <Compile Include="Util\DicomUtil.cs" />
     <Compile Include="Util\DispatcherHelper.cs" />
     <Compile Include="Util\GCUtil.cs" />
     <Compile Include="Viewer\Controls\flyff.xaml.cs">
