@@ -341,5 +341,10 @@ namespace ImageViewer
             this.list_FrameList.ScrollIntoView(this.list_FrameList.SelectedItem);
             this.list_FrameList.SelectionChanged += this.list_FrameList_SelectionChanged;
         }
+
+        private void btn_AutoWindow_Click(object sender, RoutedEventArgs e)
+        {
+            this.imgview.SetWindow(0, 0);
+        }
     }
 }

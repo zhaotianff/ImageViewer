@@ -14,6 +14,7 @@ using FellowOakDicom.Imaging.NativeCodec;
 using FellowOakDicom.Imaging.Render;
 using FellowOakDicom.Imaging.Codec;
 using System.Windows;
+using DicomViewCtrl.Dicom.Process;
 
 namespace DicomViewCtrl.Dicom.Data
 {
@@ -301,95 +302,17 @@ namespace DicomViewCtrl.Dicom.Data
 
         public void UpdateWindowWidthAndLevel(ref double windowWidth,ref double windowLevel)
         {
-            (var min, var max) = DicomUtil.GetWindowInfoLimit(this.BitsStored);
+            if (windowWidth < 1 && windowLevel < 1)
+            {
+                (windowWidth, windowLevel) = DicomImageProcessor.GetAutoWindow(this);
+            }
 
-            if (windowWidth > max)
-                windowWidth = max;
-
-            if (windowWidth < min)
-                windowWidth = min;
-
-            if (windowLevel > max)
-                windowLevel = max;
-
-            if (windowLevel < min)
-                windowLevel = min;
-
-            InternalUpdateWindow(windowWidth, windowLevel);
+            DicomImageProcessor.UpdateWindow(this, windowWidth, windowLevel);
 
             this.WindowWidth = windowWidth;
             this.WindowCenter = windowLevel;
         }
 
-        private void InternalUpdateWindow(double windowWidth, double windowCenter)
-        {
-            if(this.BitsStored == 8)
-            {
-                InternalUpdate8BitsWindow(windowWidth, windowCenter);
-            }
-            else
-            {
-                InternalUpdate16BitsWindow(windowWidth, windowCenter);
-            }
-        }
-
-        private void InternalUpdate8BitsWindow(double windowWidth, double windowCenter)
-        {
-            double min = windowCenter - windowWidth / 2.0;
-            double max = windowCenter + windowWidth / 2.0;
-
-            byte[] windowBuffer = new byte[this.Rows * this.Columns];
-
-            for (int i = 0; i < this.ImageData.Length; i++)
-            {
-                byte value = (byte)(this.ImageData[i] * this.RescaleSlope + this.RescaleIntercept);
-
-                if (value <= min)
-                    windowBuffer[i] = 0;
-                else if (value >= max)
-                    windowBuffer[i] = 255;
-                else
-                    windowBuffer[i] = (byte)(((value - min) / (max - min)) * 255.0);
-            }
-
-            this.PreviewImage.WritePixels(
-                new Int32Rect(0, 0, this.Columns, this.Rows),
-                windowBuffer,
-                this.Columns,
-                0
-            );
-        }
-
-        private void InternalUpdate16BitsWindow(double windowWidth,double windowCenter)
-        {
-            double min = windowCenter - windowWidth / 2.0;
-            double max = windowCenter + windowWidth / 2.0;
-
-            //Elapse 16ms
-            ushort[] target16BitUshortArray = new ushort[this.ImageData.Length / 2];
-            ConvertUtil.CopyByteArrayToUshortArray(this.ImageData, target16BitUshortArray);
-
-            //Elapse 54ms
-            for (int i = 0; i < target16BitUshortArray.Length; i++)
-            {
-                double value = target16BitUshortArray[i] * this.RescaleSlope + this.RescaleIntercept;
-
-                if (value <= min)
-                    target16BitUshortArray[i] = 0;
-                else if (value >= max)
-                    target16BitUshortArray[i] = 65535;
-                else
-                    target16BitUshortArray[i] = (ushort)(((value - min) / (max - min)) * 65535.0);
-            }
-
-            //Elapse 56ms
-            this.PreviewImage.WritePixels(
-                new Int32Rect(0, 0, this.Columns, this.Rows),
-                target16BitUshortArray,
-                this.Columns * 2,
-                0
-            );
-        }
 
         public void ManualUpdateThumbnail()
         {

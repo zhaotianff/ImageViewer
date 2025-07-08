@@ -100,7 +100,7 @@ namespace DicomViewCtrl
         {
             dicomFile = new DicomFile(dicomFilePath);
             dicomFile.OpenAsDicomFile(0);
-            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            SetWindow(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             AutoFit();
             HasImage = true;
@@ -137,6 +137,7 @@ namespace DicomViewCtrl
 
             dicomFile.OpenDicomFrame(frameIndex);
             this.image.Source = dicomFile.PreviewImage;
+            SetWindow(this.dicomFile.WindowWidth, this.dicomFile.WindowCenter);
 
             if (this.ImageList[imageIndex].FrameList[frameIndex].FrameThumbnail == null)
             {
@@ -155,7 +156,7 @@ namespace DicomViewCtrl
         {
             dicomFile = new DicomFile(dicomFilePath);
             await dicomFile.OpenAsDicomFileAsync(0);
-            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            SetWindow(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             AutoFit();
             HasImage = true;
@@ -168,7 +169,7 @@ namespace DicomViewCtrl
         {
             dicomFile = new DicomFile(rawFilePath);
             dicomFile.OpenAsRawFile(width, height, bits);
-            SetWindowInfo(dicomFile.WindowWidth, dicomFile.WindowCenter);
+            SetWindow(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             AutoFit();
             HasImage = true;
@@ -250,7 +251,7 @@ namespace DicomViewCtrl
             }
         }
 
-        private void SetWindowInfo(double ww,double wl)
+        public void SetWindow(double ww,double wl)
         {
             this.dicomFile.UpdateWindowWidthAndLevel(ref ww, ref wl);
 
@@ -377,7 +378,21 @@ namespace DicomViewCtrl
             var newWW = this.dicomFile.WindowWidth + (int)delta.X * this.SetWLDelta;
             var newWL = this.dicomFile.WindowCenter + (int)delta.Y * this.SetWLDelta;
 
-            SetWindowInfo(newWW, newWL);
+            (var min, var max) = DicomUtil.GetWindowInfoLimit(this.dicomFile.BitsStored);
+
+            if (newWW > max)
+                newWW = max;
+
+            if (newWW < min)
+                newWW = min;
+
+            if (newWL > max)
+                newWL = max;
+
+            if (newWL < min)
+                newWL = min;
+
+            SetWindow(newWW, newWL);
             this.image.Source = this.dicomFile.PreviewImage;
         }
 
