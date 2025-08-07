@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:DicomViewCtrl.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Canvas Background="Black" MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove" 
@@ -22,5 +23,6 @@
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WL"></Label>
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WW"></Label>
         </StackPanel>
+        <controls:AnnotationControl Position="LeftBottom" x:Name="leftTopAnnList"></controls:AnnotationControl>
     </Canvas>
 </UserControl>

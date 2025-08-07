@@ -76,6 +76,9 @@
     <Compile Include="Util\EnumHelper.cs" />
     <Compile Include="Util\TreeHelper.cs" />
     <Compile Include="Util\WindowHelper.cs" />
+    <Compile Include="Views\Dialog\DicomAnnotationWindow.xaml.cs">
+      <DependentUpon>DicomAnnotationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialog\DicomTagsWindow.xaml.cs">
       <DependentUpon>DicomTagsWindow.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\DicomAnnotationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialog\DicomTagsWindow.xaml">
       <SubType>Designer</SubType>

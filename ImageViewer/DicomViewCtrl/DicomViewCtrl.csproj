@@ -129,8 +129,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AnnotationControl.cs" />
+    <Compile Include="Controls\Definitions\AnnotationPosition.cs" />
     <Compile Include="Dicom\Data\DicomFile.cs" />
     <Compile Include="Dicom\Data\DicomInfo.cs" />
+    <Compile Include="Dicom\Data\DicomTags.cs" />
     <Compile Include="Dicom\Data\DicomTagWithValue.cs" />
     <Compile Include="Dicom\Process\DicomImageProcessor.cs" />
     <Compile Include="Util\DicomUtil.cs" />
@@ -173,6 +176,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Viewer\Controls\flyff.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

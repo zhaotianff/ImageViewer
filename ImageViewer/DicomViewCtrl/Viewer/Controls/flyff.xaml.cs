@@ -57,7 +57,11 @@ namespace DicomViewCtrl
         {
             get
             {
-                ReadAllDicomTags();
+                if(dicomTags == null || dicomTags.Count == 0)
+                {
+                    ReadAllDicomTags();
+                }
+                
                 return dicomTags;
             }
         }
@@ -103,6 +107,7 @@ namespace DicomViewCtrl
             SetWindow(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             AutoFit();
+            LoadAnnotation();
             HasImage = true;
             AddToImageList(dicomFile);
             ResetImageViewStatus();
@@ -159,6 +164,7 @@ namespace DicomViewCtrl
             SetWindow(dicomFile.WindowWidth, dicomFile.WindowCenter);
             this.image.Source = dicomFile.PreviewImage;
             AutoFit();
+            LoadAnnotation();
             HasImage = true;
             AddToImageList(dicomFile);
             ResetImageViewStatus();
@@ -427,6 +433,8 @@ namespace DicomViewCtrl
                 default:
                     break;
             }
+
+            DisplayCurrentPointInfo(e.GetPosition(this.canvas));
         }
 
         private void Canvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -446,6 +454,16 @@ namespace DicomViewCtrl
         {
             AutoSize();
             AutoPos();
+        }
+
+        private void LoadAnnotation()
+        {
+            var list = new List<FellowOakDicom.DicomTag>();
+            list.Add(FellowOakDicom.DicomTag.PatientName);
+            list.Add(FellowOakDicom.DicomTag.SeriesInstanceUID);
+            list.Add(FellowOakDicom.DicomTag.WindowWidth);
+            list.Add(FellowOakDicom.DicomTag.WindowCenter);
+            leftTopAnnList.AnnotationList = new ObservableCollection<DicomTagWithValue>(list.Select(x => this.DicomTags.FirstOrDefault(y => y.Group == x.Group && y.Element == x.Element)));
         }
 
         private void AutoSize()
@@ -646,6 +664,67 @@ namespace DicomViewCtrl
         {
             if (this.HasImage == false)
                 throw new Exception("Not open dicom image yet.");
+        }
+
+        private void DisplayCurrentPointInfo(Point current)
+        {
+            if (this.HasImage == false)
+                return;
+
+            var point = GetCurrentPoint(current);
+            var value = GetPointValue(point);
+
+            this.lbl_WL.Content = point.X.ToString();
+            this.lbl_WW.Content = point.Y.ToString();
+        }
+
+        private Point GetCurrentPoint(Point current)
+        {
+            GeneralTransform transform = this.image.RenderTransform.Inverse;
+            if (transform == null)
+                return new Point(-1, -1); 
+
+            Point imageCoord = transform.Transform(current);
+
+            // Now scale from displayed image pixels to DICOM image resolution
+            int x = (int)Math.Floor(imageCoord.X * this.dicomFile.Columns / this.image.ActualWidth);
+            int y = (int)Math.Floor(imageCoord.Y * this.dicomFile.Rows / this.image.ActualHeight);
+
+            if (x < 0)
+                x = 0;
+
+            if (x > this.dicomFile.Columns)
+                x = this.dicomFile.Columns;
+
+            if (y < 0)
+                y = 0;
+
+            if (y > this.dicomFile.Rows)
+                y = this.dicomFile.Rows;
+
+            return new Point(x, y);
+        }
+
+        private ushort GetPointValue(Point current)
+        {
+            if (this.dicomFile.BitsStored == 8)
+            {
+                var index = (int)(current.Y * this.dicomFile.Columns + current.X);
+                if (index >= this.dicomFile.ImageData.Length)
+                {
+                    index = this.dicomFile.ImageData.Length - 1;
+                }
+                return this.dicomFile.ImageData[index];
+            }
+            else
+            {
+                var index = (int)(current.Y * this.dicomFile.Columns + current.X) * 2;
+                if (index + 1 >= this.dicomFile.ImageData.Length)
+                {
+                    index = this.dicomFile.ImageData.Length - 2;
+                }
+                return (ushort)(this.dicomFile.ImageData[index] | (this.dicomFile.ImageData[index + 1] << 8));
+            }
         }
     }
 }

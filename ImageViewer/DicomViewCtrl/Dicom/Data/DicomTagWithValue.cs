@@ -30,6 +30,17 @@ namespace DicomViewCtrl.Dicom.Data
 
         internal bool IsModified { get; private set; }
 
+        public DicomTagWithValue(ushort group,ushort element)
+        {
+            this.Group = group;
+            this.Element = element;
+        }
+
+        public DicomTagWithValue()
+        {
+
+        }
+
         public override string ToString()
         {
             return Value.ToString();

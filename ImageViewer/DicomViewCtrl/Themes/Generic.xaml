@@ -1,0 +1,30 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:DicomViewCtrl.Controls"
+    xmlns:local="clr-namespace:DicomViewCtrl">
+
+    <Style TargetType="{x:Type controls:AnnotationControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AnnotationControl}">
+                    <Border Background="{TemplateBinding Background}"
+                         BorderBrush="{TemplateBinding BorderBrush}"
+                         BorderThickness="{TemplateBinding BorderThickness}" IsHitTestVisible="False">
+                        <ItemsControl ItemsSource="{Binding AnnotationList,RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent" BorderThickness="0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Description}" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
+                                        <TextBlock Text=":" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
+                                        <TextBlock Text="{Binding Value}" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

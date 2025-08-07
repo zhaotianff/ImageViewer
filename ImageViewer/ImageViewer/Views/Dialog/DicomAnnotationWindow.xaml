@@ -1,0 +1,47 @@
+﻿<controls:CustomWindow x:Class="ImageViewer.Views.Dialog.DicomAnnotationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
+        xmlns:controls="clr-namespace:ImageViewer.Controls"
+        mc:Ignorable="d"
+        Title="Annotation Config" Height="550" Width="900" WindowStartupLocation="CenterScreen">
+    <Grid Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <TabControl Background="Black">
+            <TabItem Header="常用">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
+
+                    </ListBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="全部">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox Grid.Row="1" Background="Black" Name="list_all" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
+
+                    </ListBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Column="1">
+            
+        </Grid>
+    </Grid>
+</controls:CustomWindow>
