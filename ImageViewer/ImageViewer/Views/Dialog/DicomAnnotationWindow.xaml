@@ -4,44 +4,63 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
+        xmlns:imgviewcontrols="clr-namespace:DicomViewCtrl.Controls;assembly=DicomViewCtrl"
         xmlns:controls="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
-        Title="Annotation Config" Height="550" Width="900" WindowStartupLocation="CenterScreen">
+        Title="Annotation Config" Height="550" Width="900" BorderThickness="1" BorderBrush="White" WindowStartupLocation="CenterScreen">
     <Grid Background="Black">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.5*"/>
-            <ColumnDefinition Width="3*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
 
-        <TabControl Background="Black">
-            <TabItem Header="常用">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"></RowDefinition>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
 
-                    <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
+            <TabControl Background="Black">
+                <TabItem Header="常用">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                    </ListBox>
+                        <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
+
+                        </ListBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="全部">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <ListBox Grid.Row="1" Background="Black" Name="list_all" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
+
+                        </ListBox>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            <Canvas Grid.Column="1" Name="canvas_demo">
+                <Grid Width="{Binding ElementName=canvas_demo,Path=ActualWidth}" Height="{Binding ElementName=canvas_demo,Path=ActualHeight}">
+                    <Label Content="Demo Image" FontSize="60" FontFamily="Arial" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver"></Label>
                 </Grid>
-            </TabItem>
-            <TabItem Header="全部">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"></RowDefinition>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
 
-                    <ListBox Grid.Row="1" Background="Black" Name="list_all" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
-
-                    </ListBox>
-                </Grid>
-            </TabItem>
-        </TabControl>
-
-        <Grid Grid.Column="1">
-            
+                <imgviewcontrols:AnnotationControl EditMode="True" Position="LeftTop" x:Name="leftTopAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl EditMode="True" Position="RightTop" x:Name="rightTopAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl EditMode="True" Position="LeftBottom" x:Name="leftBottomAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl EditMode="True" Position="RightBottom" x:Name="rightBottomAnnList"></imgviewcontrols:AnnotationControl>
+            </Canvas>
         </Grid>
+
+        <DockPanel Grid.Row="1" LastChildFill="True">
+            <CheckBox Content="隐藏标题" Margin="5,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Left" Foreground="White" Name="cbx_ShowDescrption" Checked="cbx_ShowDescription_Checked" Unchecked="cbx_ShowDescription_Unchecked"></CheckBox>
+        </DockPanel>
     </Grid>
 </controls:CustomWindow>

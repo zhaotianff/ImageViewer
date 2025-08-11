@@ -346,5 +346,11 @@ namespace ImageViewer
         {
             this.imgview.SetWindow(0, 0);
         }
+
+        private void btn_Annotation_Click(object sender, RoutedEventArgs e)
+        {
+            DicomAnnotationWindow dicomAnnotationWindow = new DicomAnnotationWindow();
+            dicomAnnotationWindow.ShowDialog();
+        }
     }
 }

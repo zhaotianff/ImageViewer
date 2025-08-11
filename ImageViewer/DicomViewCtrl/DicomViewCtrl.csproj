@@ -131,6 +131,8 @@
   <ItemGroup>
     <Compile Include="Controls\AnnotationControl.cs" />
     <Compile Include="Controls\Definitions\AnnotationPosition.cs" />
+    <Compile Include="Converters\BoolInvertToVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Dicom\Data\DicomFile.cs" />
     <Compile Include="Dicom\Data\DicomInfo.cs" />
     <Compile Include="Dicom\Data\DicomTags.cs" />

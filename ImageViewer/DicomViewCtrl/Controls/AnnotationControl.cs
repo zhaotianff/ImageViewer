@@ -29,6 +29,8 @@ namespace DicomViewCtrl.Controls
         public static readonly DependencyProperty AnnotationListProperty = DependencyProperty.Register("AnnotationList", typeof(ObservableCollection<DicomTagWithValue>), typeof(AnnotationControl));
         public static readonly DependencyProperty AnnotationFontSizeProperty = DependencyProperty.Register("AnnotationFontSize", typeof(int), typeof(AnnotationControl), new PropertyMetadata(12));
         public static readonly DependencyProperty AnnotationForegroundProperty = DependencyProperty.Register("AnnotationForeground", typeof(SolidColorBrush), typeof(AnnotationControl), new PropertyMetadata(Brushes.White));
+        public static readonly DependencyProperty ShowDescriptionProperty = DependencyProperty.Register("ShowDescription", typeof(bool), typeof(AnnotationControl), new PropertyMetadata(true, OnShowDescriptionChanged));
+        public static readonly DependencyProperty EditModeProperty = DependencyProperty.Register("EditMode", typeof(bool), typeof(AnnotationControl), new PropertyMetadata(false));
 
         public AnnotationPosition Position
         {
@@ -80,6 +82,38 @@ namespace DicomViewCtrl.Controls
             {
                 SetValue(AnnotationForegroundProperty, value);
             }
+        }
+
+        public bool ShowDescription
+        {
+            get
+            {
+                return (bool)GetValue(ShowDescriptionProperty);
+            }
+
+            set
+            {
+                SetValue(ShowDescriptionProperty, value);
+            }
+        }
+
+        public bool EditMode
+        {
+            get
+            {
+                return (bool)GetValue(EditModeProperty);
+            }
+
+            set
+            {
+                SetValue(EditModeProperty, value);
+            }
+        }
+
+        private static void OnShowDescriptionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var annotationControl = d as AnnotationControl;
+            annotationControl.ShowDescription = (bool)e.NewValue;
         }
 
         public static void OnPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
