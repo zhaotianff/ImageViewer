@@ -34,7 +34,6 @@ namespace DicomViewCtrl
         private const int SET_WL_Delta_8Bit = 2;
         private const int SET_WL_Delta_16Bit = 8;
 
-        private float currentRatio = 1.0f;
         private Point startZoomPoint;
         private Point startMovePoint;
         private Point startWLPoint;

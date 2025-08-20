@@ -21,6 +21,7 @@ using ImageViewer.Infrastructure.Definitions;
 using ImageViewer.Infrastructure.Attributes;
 using ImageViewer.Controls;
 using ImageViewer.Controls.UserControls;
+using ImageViewer.Configuration;
 
 namespace ImageViewer
 {
@@ -29,6 +30,8 @@ namespace ImageViewer
     /// </summary>
     public partial class MainWindow : Controls.CustomWindow
     {
+        private ConfigurationManager configurationManager;
+
         private bool isPlay = false;
         private FpsType fpsType = FpsType.Fps_20;
 
@@ -43,7 +46,13 @@ namespace ImageViewer
         {
             this.list_ImageList.ItemsSource = imgview.ImageList;
 
+            InitializeConfig();
             InitializeToolBar();
+        }
+
+        private void InitializeConfig()
+        {
+            configurationManager = ConfigurationManager.Instance;
         }
 
         private void InitializeToolBar()
@@ -326,6 +335,8 @@ namespace ImageViewer
         private void CustomWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Pause();
+
+            configurationManager.WriteConfiguration();
         }
 
         private void btn_DicomTags_Click(object sender, RoutedEventArgs e)

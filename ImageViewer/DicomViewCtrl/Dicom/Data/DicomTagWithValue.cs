@@ -36,6 +36,11 @@ namespace DicomViewCtrl.Dicom.Data
             this.Element = element;
         }
 
+        public DicomTagWithValue(ushort group,ushort element,string description) : this(group,element)
+        {
+            this.Description = description;
+        }
+
         public DicomTagWithValue()
         {
 

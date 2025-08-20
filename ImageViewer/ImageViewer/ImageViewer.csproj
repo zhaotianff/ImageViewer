@@ -61,6 +61,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Configuration\Annotation\AnnotationConfiguration.cs" />
+    <Compile Include="Configuration\ConfigurationManager.cs" />
+    <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Controls\CustomWindow.cs" />
     <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Controls\UserControls\DropDownButton.xaml.cs">
@@ -74,8 +77,10 @@
     <Compile Include="Util\DialogHelper.cs" />
     <Compile Include="Util\DirectoryHelper.cs" />
     <Compile Include="Util\EnumHelper.cs" />
+    <Compile Include="Util\ReflectionExtension.cs" />
     <Compile Include="Util\TreeHelper.cs" />
     <Compile Include="Util\WindowHelper.cs" />
+    <Compile Include="Util\XmlExtension.cs" />
     <Compile Include="Views\Dialog\DicomAnnotationWindow.xaml.cs">
       <DependentUpon>DicomAnnotationWindow.xaml</DependentUpon>
     </Compile>
