@@ -11,6 +11,9 @@ namespace ImageViewer.Util
     {
         public static T DynamicCast<T>(string strValue)
         {
+            if (typeof(T) == typeof(string))
+                return (T)(object)strValue;
+
             var valueType = typeof(T);
             Type[] argTypes = { typeof(string), valueType.MakeByRefType() };
             var tryParseFunc = typeof(T).GetMethod("TryParse", argTypes);

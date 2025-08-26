@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:DicomViewCtrl.Controls"
     xmlns:converters="clr-namespace:DicomViewCtrl.Converters"
-    xmlns:local="clr-namespace:DicomViewCtrl">
+    xmlns:local="clr-namespace:DicomViewCtrl"
+    xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.WPF.DragDrop">
 
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
     <converters:BoolInvertToVisibilityConverter x:Key="BoolInvertToVisibilityConverter"></converters:BoolInvertToVisibilityConverter>
@@ -30,7 +31,11 @@
                                 </ItemsControl>
                             </Grid>
                             <Grid x:Name="Part_Edit" Visibility="{Binding EditMode,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource BoolToVisibilityConverter}}">
-                                <ListBox ItemsSource="{Binding AnnotationList,RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent" BorderThickness="0">
+                                <ListBox ItemsSource="{Binding AnnotationList,RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent" BorderThickness="0"
+                                         dd:DragDrop.DropTargetAdornerBrush="White"
+                                         dd:DragDrop.IsDragSource="True"
+                                         dd:DragDrop.IsDropTarget="True"
+                                         dd:DragDrop.UseDefaultEffectDataTemplate="True">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel>

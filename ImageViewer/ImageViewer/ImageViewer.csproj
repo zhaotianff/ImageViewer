@@ -183,6 +183,10 @@
       <Project>{ef16c295-cd01-4dba-86c7-5127a382dce7}</Project>
       <Name>DicomViewCtrl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GongSolutions.WPF.DragDrop\GongSolutions.WPF.DragDrop.csproj">
+      <Project>{e6de91f0-6b60-459e-b78d-8451dc7e2c1b}</Project>
+      <Name>GongSolutions.WPF.DragDrop</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

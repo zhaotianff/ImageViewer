@@ -93,9 +93,9 @@ namespace ImageViewer.Configuration.Annotation
             foreach (var item in xElement.Elements())
             {
                 yield return new DicomTagWithValue(
-                    XmlExtension.GetAttributeValue<ushort>(xElement, "Group"),
-                    XmlExtension.GetAttributeValue<ushort>(xElement, "Element"),
-                    XmlExtension.GetAttributeValue<string>(xElement, "Description"));
+                    XmlExtension.GetAttributeValue<ushort>(item, "Group"),
+                    XmlExtension.GetAttributeValue<ushort>(item, "Element"),
+                    XmlExtension.GetAttributeValue<string>(item, "Description"));
             }
         }
     }

@@ -16,7 +16,7 @@ namespace ImageViewer.Configuration
         private static volatile ConfigurationManager configurationManager;
         private static readonly object obj = new object();
         private static readonly string configDir = Environment.ExpandEnvironmentVariables("%ProgramData%\\FF.ImageViewer");
-        private static readonly string configFilePath = "\\config.xml";
+        private static readonly string configFileName = "\\config.xml";
 
         public static ConfigurationManager Instance
         {
@@ -49,9 +49,9 @@ namespace ImageViewer.Configuration
 
         private void LoadConfiguration()
         {
-            if(System.IO.File.Exists(configFilePath))
+            if(System.IO.File.Exists(configDir + configFileName))
             {
-                LoadConfigurationFromFile(configFilePath);
+                LoadConfigurationFromFile(configDir + configFileName);
             }
             else
             {
@@ -109,7 +109,7 @@ namespace ImageViewer.Configuration
             }
 
             XmlWriterSettings xws = new XmlWriterSettings { OmitXmlDeclaration = true, Encoding = Encoding.UTF8, Indent = true };
-            using (XmlWriter xw = XmlWriter.Create(configDir + configFilePath, xws))
+            using (XmlWriter xw = XmlWriter.Create(configDir + configFileName, xws))
             {
                 doc.Save(xw);
             }

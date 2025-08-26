@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer.Views.Dialog"
         xmlns:imgviewcontrols="clr-namespace:DicomViewCtrl.Controls;assembly=DicomViewCtrl"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.WPF.DragDrop"
         xmlns:controls="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d"
         Title="Annotation Config" Height="550" Width="900" BorderThickness="1" BorderBrush="White" WindowStartupLocation="CenterScreen">
@@ -28,8 +29,11 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
-
+                        <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                                  dd:DragDrop.DropTargetAdornerBrush="White"
+                                  dd:DragDrop.IsDragSource="True"
+                                  dd:DragDrop.IsDropTarget="True"
+                                  dd:DragDrop.UseDefaultEffectDataTemplate="True">
                         </ListBox>
                     </Grid>
                 </TabItem>
@@ -52,10 +56,10 @@
                     <Label Content="Demo Image" FontSize="60" FontFamily="Arial" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver"></Label>
                 </Grid>
 
-                <imgviewcontrols:AnnotationControl EditMode="True" Position="LeftTop" x:Name="leftTopAnnList"></imgviewcontrols:AnnotationControl>
-                <imgviewcontrols:AnnotationControl EditMode="True" Position="RightTop" x:Name="rightTopAnnList"></imgviewcontrols:AnnotationControl>
-                <imgviewcontrols:AnnotationControl EditMode="True" Position="LeftBottom" x:Name="leftBottomAnnList"></imgviewcontrols:AnnotationControl>
-                <imgviewcontrols:AnnotationControl EditMode="True" Position="RightBottom" x:Name="rightBottomAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl MinWidth="150" MinHeight="100" EditMode="True" Position="LeftTop" x:Name="leftTopAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl MinWidth="150" MinHeight="100" EditMode="True" Position="RightTop" x:Name="rightTopAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl MinWidth="150" MinHeight="100" EditMode="True" Position="LeftBottom" x:Name="leftBottomAnnList"></imgviewcontrols:AnnotationControl>
+                <imgviewcontrols:AnnotationControl MinWidth="150" MinHeight="100" EditMode="True" Position="RightBottom" x:Name="rightBottomAnnList"></imgviewcontrols:AnnotationControl>
             </Canvas>
         </Grid>
 

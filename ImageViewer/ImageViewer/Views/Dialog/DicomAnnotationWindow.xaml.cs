@@ -1,4 +1,5 @@
 ﻿using DicomViewCtrl.Dicom.Data;
+using ImageViewer.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,11 +26,10 @@ namespace ImageViewer.Views.Dialog
         {
             InitializeComponent();
 
-            this.list_common.ItemsSource = DicomTags.GetCommon();
-            this.list_all.ItemsSource = DicomTags.GetAll();
+            this.list_common.ItemsSource = new ObservableCollection<DicomTagWithValue>(DicomTags.GetCommon());
+            this.list_all.ItemsSource = new ObservableCollection<DicomTagWithValue>(DicomTags.GetAll());
 
             LoadConfig();
-            LoadDemoAnnotationList();
         }
 
         private void LoadConfig()
@@ -37,6 +37,11 @@ namespace ImageViewer.Views.Dialog
             this.cbx_ShowDescrption.Checked -= cbx_ShowDescription_Checked;
             this.cbx_ShowDescrption.IsChecked = true;
             this.cbx_ShowDescrption.Checked += cbx_ShowDescription_Checked;
+
+            this.leftTopAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.LeftTop;
+            this.rightTopAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.RightTop;
+            this.leftBottomAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.LeftBottom;
+            this.rightBottomAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.RightBottom;
         }
 
         private void LoadDemoAnnotationList()
