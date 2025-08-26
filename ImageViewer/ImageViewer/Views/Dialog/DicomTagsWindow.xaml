@@ -14,6 +14,7 @@
         </Grid.RowDefinitions>
 
         <Label Content="搜索关键字" Foreground="White" VerticalAlignment="Center"></Label>
+        <TextBox HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" Margin="80,0,0,0" Name="tbox_Keyword" KeyUp="TextBox_KeyUp"></TextBox>
         <ListView Grid.Row="1" Style="{StaticResource ListViewStyle}" Name="list_DicomTags">
             <ListView.View>
                 <GridView>

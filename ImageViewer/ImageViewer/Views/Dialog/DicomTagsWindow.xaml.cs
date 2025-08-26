@@ -20,11 +20,15 @@ namespace ImageViewer.Views.Dialog
     /// </summary>
     public partial class DicomTagsWindow : Controls.CustomWindow
     {
+        private ObservableCollection<DicomViewCtrl.Dicom.Data.DicomTagWithValue> dicomTags = new ObservableCollection<DicomViewCtrl.Dicom.Data.DicomTagWithValue>();
+
         public DicomTagsWindow(ObservableCollection<DicomViewCtrl.Dicom.Data.DicomTagWithValue> dicomTags)
         {
             InitializeComponent();
 
-            this.list_DicomTags.ItemsSource = dicomTags;
+            this.tbox_Keyword.Focus();
+            this.dicomTags = dicomTags;
+            this.list_DicomTags.ItemsSource = this.dicomTags;
         }
 
         private void AutoSizeColumns(double width)
@@ -41,6 +45,23 @@ namespace ImageViewer.Views.Dialog
         private void CustomWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             AutoSizeColumns(e.NewSize.Width);
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (this.dicomTags.Count == 0)
+                return;
+
+            var keyword = this.tbox_Keyword.Text.Trim();
+            if (string.IsNullOrEmpty(keyword))
+            {
+                this.list_DicomTags.ItemsSource = this.dicomTags;
+            }
+            else
+            {
+                this.list_DicomTags.ItemsSource = this.dicomTags.
+                    Where(x=>x.Description.ToLower().Contains(keyword.ToLower()));
+            }
         }
     }
 }
