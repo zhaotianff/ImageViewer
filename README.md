@@ -29,14 +29,27 @@ Medical image display control,support dicom/raw image.
 
 <p align="center">
 <img src="ImageViewer/Screenshots/1.png">
+<p align="center">single image</p>
 </p>
 
 <p align="center">
 <img src="ImageViewer/Screenshots/2.png">
+<p align="center">multi series</p>
 </p>
 
 <p align="center">
 <img src="ImageViewer/Screenshots/3.png">
+<p align="center">dicom tags</p>
+</p>
+
+<p align="center">
+<img src="ImageViewer/Screenshots/4.png">
+<p align="center">annotation config</p>
+</p>
+
+<p align="center">
+<img src="ImageViewer/Screenshots/5.png">
+<p align="center">open raw</p>
 </p>
 
 # Features
@@ -45,7 +58,6 @@ Medical image display control,support dicom/raw image.
 * Zoom Out/In
 
 ## Roadmap
-
 * SetWindow
 * Text tool
 * Annotation
