@@ -53,6 +53,12 @@ namespace ImageViewer
         private void InitializeConfig()
         {
             configurationManager = ConfigurationManager.Instance;
+
+            var annotationConfig = configurationManager.AnnotationConfiguration;
+            this.imgview.SetAnnotationTags(annotationConfig.LeftTop, 
+                annotationConfig.RightTop, 
+                annotationConfig.LeftBottom, 
+                annotationConfig.RightBottom);
         }
 
         private void InitializeToolBar()

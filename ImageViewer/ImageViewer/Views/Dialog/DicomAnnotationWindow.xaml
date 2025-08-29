@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
-            <TabControl Background="Black">
+            <TabControl Background="Black" SelectionChanged="TabControl_SelectionChanged" Name="tab_Tags">
                 <TabItem Header="常用">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -29,7 +29,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                        <ListBox Grid.Row="1" Background="Black" Name="list_common" DisplayMemberPath="Description" Style="{StaticResource ListBoxStyle}" ItemContainerStyle="{StaticResource ListBoxItemStyle}" SelectionChanged="list_common_SelectionChanged"
                                   dd:DragDrop.DropTargetAdornerBrush="White"
                                   dd:DragDrop.IsDragSource="True"
                                   dd:DragDrop.IsDropTarget="True"

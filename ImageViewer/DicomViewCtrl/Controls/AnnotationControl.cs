@@ -1,4 +1,5 @@
 ﻿using DicomViewCtrl.Controls.Definitions;
+using DicomViewCtrl.Controls.EventArgs;
 using DicomViewCtrl.Dicom.Data;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,39 @@ namespace DicomViewCtrl.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AnnotationControl), new FrameworkPropertyMetadata(typeof(AnnotationControl)));
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+            this.AnnotationList.CollectionChanged += AnnotationList_CollectionChanged;
+        }
+
+        private void AnnotationList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                AnnotationControlEventArgs annotationControlEventArgs = new AnnotationControlEventArgs(AnnotationChangedEvent, this, e.NewItems[0] as DicomTagWithValue);
+                this.RaiseEvent(annotationControlEventArgs);
+            }
+        }
+
         public static readonly DependencyProperty PositionProperty = DependencyProperty.Register("Position", typeof(AnnotationPosition), typeof(AnnotationControl), new PropertyMetadata(OnPositionChanged));
         public static readonly DependencyProperty AnnotationListProperty = DependencyProperty.Register("AnnotationList", typeof(ObservableCollection<DicomTagWithValue>), typeof(AnnotationControl));
         public static readonly DependencyProperty AnnotationFontSizeProperty = DependencyProperty.Register("AnnotationFontSize", typeof(int), typeof(AnnotationControl), new PropertyMetadata(12));
         public static readonly DependencyProperty AnnotationForegroundProperty = DependencyProperty.Register("AnnotationForeground", typeof(SolidColorBrush), typeof(AnnotationControl), new PropertyMetadata(Brushes.White));
         public static readonly DependencyProperty ShowDescriptionProperty = DependencyProperty.Register("ShowDescription", typeof(bool), typeof(AnnotationControl), new PropertyMetadata(true, OnShowDescriptionChanged));
         public static readonly DependencyProperty EditModeProperty = DependencyProperty.Register("EditMode", typeof(bool), typeof(AnnotationControl), new PropertyMetadata(false));
+
+        public static readonly RoutedEvent AnnotationChangedEvent = EventManager.RegisterRoutedEvent(
+        "AnnotationChanged", RoutingStrategy.Bubble, typeof(AnnotationChangedEventHandler), typeof(AnnotationControl));
+
+        public delegate void AnnotationChangedEventHandler(object sender, AnnotationControlEventArgs e);
+
+        public event AnnotationChangedEventHandler AnnotationChanged
+        {
+            add { this.AddHandler(AnnotationChangedEvent, value); }
+            remove { this.RemoveHandler(AnnotationChangedEvent, value); }
+        }
 
         public AnnotationPosition Position
         {

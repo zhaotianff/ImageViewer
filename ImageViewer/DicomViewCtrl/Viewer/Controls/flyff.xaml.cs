@@ -65,7 +65,17 @@ namespace DicomViewCtrl
             }
         }
 
-        public bool HasImage { get; set; } = false;       
+        private bool hasImage = false;
+
+        public bool HasImage 
+        {
+            get => hasImage;
+            set
+            {
+                hasImage = value;
+                SetAnnotationVisibility(value);
+            }
+        }   
 
         public int FrameIndex
         {
@@ -455,14 +465,44 @@ namespace DicomViewCtrl
             AutoPos();
         }
 
+        public void SetAnnotationTags(ObservableCollection<DicomTagWithValue> leftTop,
+            ObservableCollection<DicomTagWithValue> rightTop,
+            ObservableCollection<DicomTagWithValue> leftBottom,
+            ObservableCollection<DicomTagWithValue> rightBottom)
+        {
+            this.leftTopAnnList.AnnotationList = leftTop;
+            this.rightTopAnnList.AnnotationList = rightTop;
+            this.leftBottomAnnList.AnnotationList = leftBottom;
+            this.rightBottomAnnList.AnnotationList = rightBottom;
+        }
+
         private void LoadAnnotation()
         {
-            var list = new List<FellowOakDicom.DicomTag>();
-            list.Add(FellowOakDicom.DicomTag.PatientName);
-            list.Add(FellowOakDicom.DicomTag.SeriesInstanceUID);
-            list.Add(FellowOakDicom.DicomTag.WindowWidth);
-            list.Add(FellowOakDicom.DicomTag.WindowCenter);
-            leftTopAnnList.AnnotationList = new ObservableCollection<DicomTagWithValue>(list.Select(x => this.DicomTags.FirstOrDefault(y => y.Group == x.Group && y.Element == x.Element)));
+            FillDicomTagsValue(this.leftTopAnnList.AnnotationList);
+            FillDicomTagsValue(this.rightTopAnnList.AnnotationList);
+            FillDicomTagsValue(this.leftBottomAnnList.AnnotationList);
+            FillDicomTagsValue(this.rightBottomAnnList.AnnotationList);
+        }
+
+        private void SetAnnotationVisibility(bool isShow)
+        {
+            this.leftTopAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
+            this.rightTopAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
+            this.leftBottomAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
+            this.rightBottomAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void FillDicomTagsValue(ObservableCollection<DicomTagWithValue> dicomTagWithValues)
+        {
+            foreach (var tag in dicomTagWithValues)
+            {
+                ReadDicomTagValue(tag);
+            }
+        }
+
+        private void ReadDicomTagValue(DicomTagWithValue tag)
+        {
+            tag.Value = this.DicomTags.FirstOrDefault(x => x.GetHashCode() == tag.GetHashCode())?.Value;
         }
 
         private void AutoSize()
@@ -724,6 +764,11 @@ namespace DicomViewCtrl
                 }
                 return (ushort)(this.dicomFile.ImageData[index] | (this.dicomFile.ImageData[index + 1] << 8));
             }
+        }
+
+        private void AnnList_AnnotationChanged(object sender, Controls.EventArgs.AnnotationControlEventArgs e)
+        {
+            ReadDicomTagValue(e.DicomTagWithValue);
         }
     }
 }

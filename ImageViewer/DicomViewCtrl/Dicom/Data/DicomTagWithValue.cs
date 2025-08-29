@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DicomViewCtrl.Dicom.Data
 {
-    public class DicomTagWithValue : IEquatable<DicomTagWithValue>
+    public class DicomTagWithValue : IEquatable<DicomTagWithValue>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public ushort Group { get; internal set; }
 
         public ushort Element { get; internal set; }
@@ -24,6 +27,7 @@ namespace DicomViewCtrl.Dicom.Data
             {
                 this.value = value;
                 IsModified = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -69,7 +73,7 @@ namespace DicomViewCtrl.Dicom.Data
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return (Group,Element).GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -79,5 +83,6 @@ namespace DicomViewCtrl.Dicom.Data
 
             return base.Equals(obj);
         }
+
     }
 }

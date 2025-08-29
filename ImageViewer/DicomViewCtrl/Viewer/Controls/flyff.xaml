@@ -23,6 +23,9 @@
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WL"></Label>
             <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WW"></Label>
         </StackPanel>
-        <controls:AnnotationControl Position="LeftBottom" x:Name="leftTopAnnList"></controls:AnnotationControl>
+        <controls:AnnotationControl Position="LeftTop" x:Name="leftTopAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
+        <controls:AnnotationControl Position="RightTop" x:Name="rightTopAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
+        <controls:AnnotationControl Position="LeftBottom" x:Name="leftBottomAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
+        <controls:AnnotationControl Position="RightBottom" x:Name="rightBottomAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
     </Canvas>
 </UserControl>
