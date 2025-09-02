@@ -8,6 +8,7 @@
 
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converters:BoolToVisibilityConverter>
     <converters:BoolInvertToVisibilityConverter x:Key="BoolInvertToVisibilityConverter"></converters:BoolInvertToVisibilityConverter>
+    <converters:BoolToTextDecorationConverter x:Key="BoolToTextDecorationConverter"></converters:BoolToTextDecorationConverter>
 
     <Style TargetType="{x:Type controls:AnnotationControl}">
         <Setter Property="Template">
@@ -39,7 +40,7 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel>
-                                                <TextBlock Text="{Binding Description}" Visibility="{Binding ShowDescription,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl},Converter={StaticResource BoolToVisibilityConverter}}" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
+                                                <TextBlock Text="{Binding Description}" TextDecorations="{Binding ShowDescription,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl},Converter={StaticResource BoolToTextDecorationConverter}}" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
                                                 <TextBlock Text=" : "  Visibility="{Binding ShowDescription,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl},Converter={StaticResource BoolToVisibilityConverter}}"  Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
                                                 <TextBlock Text="{Binding Value}" Foreground="{Binding AnnotationForeground,RelativeSource={RelativeSource AncestorType=controls:AnnotationControl}}"></TextBlock>
                                             </DockPanel>

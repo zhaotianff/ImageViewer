@@ -64,7 +64,7 @@
         </Grid>
 
         <DockPanel Grid.Row="1" LastChildFill="True">
-            <CheckBox Content="隐藏标题" Margin="5,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Left" Foreground="White" Name="cbx_ShowDescrption" Checked="cbx_ShowDescription_Checked" Unchecked="cbx_ShowDescription_Unchecked"></CheckBox>
+            <CheckBox Content="显示标题" Margin="5,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Left" Foreground="White" Name="cbx_ShowDescrption" Checked="cbx_ShowDescription_Checked" Unchecked="cbx_ShowDescription_Unchecked"></CheckBox>
         </DockPanel>
     </Grid>
 </controls:CustomWindow>

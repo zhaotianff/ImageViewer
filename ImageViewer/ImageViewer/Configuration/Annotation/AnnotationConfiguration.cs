@@ -3,6 +3,7 @@ using ImageViewer.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using System.Xml.Linq;
 
 namespace ImageViewer.Configuration.Annotation
 {
-    public class AnnotationConfiguration : IConfiguration
+    public class AnnotationConfiguration : IConfiguration, INotifyPropertyChanged
     {
         public ObservableCollection<DicomTagWithValue> LeftTop { get; set; }
 
@@ -20,7 +21,17 @@ namespace ImageViewer.Configuration.Annotation
 
         public ObservableCollection<DicomTagWithValue> RightBottom { get; set; }
 
-        public bool IsShowDescription { get; set; }
+        private bool isShowDescription;
+
+        public bool IsShowDescription 
+        {
+            get => isShowDescription;
+            set
+            {
+                isShowDescription = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsShowDescription"));
+            }
+        }
 
         public string ModuleName => "AnnotationConfiguration";
 
@@ -33,6 +44,8 @@ namespace ImageViewer.Configuration.Annotation
         {
             SetDefaultConfiguration();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void LoadAnnotationConfiguration(XElement xElement)
         {

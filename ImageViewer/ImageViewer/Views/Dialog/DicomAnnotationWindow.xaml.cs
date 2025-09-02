@@ -24,14 +24,15 @@ namespace ImageViewer.Views.Dialog
 
         private void LoadConfig()
         {
-            this.cbx_ShowDescrption.Checked -= cbx_ShowDescription_Checked;
-            this.cbx_ShowDescrption.IsChecked = true;
-            this.cbx_ShowDescrption.Checked += cbx_ShowDescription_Checked;
+            var isShowDescription = ConfigurationManager.Instance.AnnotationConfiguration.IsShowDescription;
+            this.cbx_ShowDescrption.IsChecked = isShowDescription;
 
             this.leftTopAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.LeftTop;
             this.rightTopAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.RightTop;
             this.leftBottomAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.LeftBottom;
             this.rightBottomAnnList.AnnotationList = ConfigurationManager.Instance.AnnotationConfiguration.RightBottom;
+
+            SetAnnotationListVisibility(isShowDescription, true);
         }
 
         private void LoadDemoAnnotationList()
@@ -63,12 +64,17 @@ namespace ImageViewer.Views.Dialog
                 }));
         }
 
-        private void SetAnnotationListVisibility(bool isShow)
+        private void SetAnnotationListVisibility(bool isShow, bool keepConfig = false)
         {
             this.leftTopAnnList.ShowDescription = isShow;
             this.rightTopAnnList.ShowDescription = isShow;
             this.leftBottomAnnList.ShowDescription = isShow;
             this.rightBottomAnnList.ShowDescription = isShow;
+
+            if (keepConfig == false)
+            {
+                ConfigurationManager.Instance.AnnotationConfiguration.IsShowDescription = isShow;
+            }
         }
 
         private void cbx_ShowDescription_Checked(object sender, RoutedEventArgs e)

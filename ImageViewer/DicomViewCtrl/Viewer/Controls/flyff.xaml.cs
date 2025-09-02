@@ -1,4 +1,5 @@
-﻿using DicomViewCtrl.Dicom.Data;
+﻿using DicomViewCtrl.Controls;
+using DicomViewCtrl.Dicom.Data;
 using DicomViewCtrl.Util;
 using DicomViewCtrl.Viewer.Data;
 using System;
@@ -270,18 +271,10 @@ namespace DicomViewCtrl
         {
             this.dicomFile.UpdateWindowWidthAndLevel(ref ww, ref wl);
 
-            this.lbl_WL.Content = $"WL:{wl}";
-            this.lbl_WW.Content = $"WW:{ww}";
-        }
-        
-        public void ShowWindowInfo()
-        {
-            stackpanel_Window.Visibility = Visibility.Visible;
-        }
+            UpdateDicomTagValue(Dicom.Data.DicomTags.WindowWidth, ww);
+            UpdateDicomTagValue(Dicom.Data.DicomTags.WindowCenter, wl);
 
-        public void HideWindowInfo()
-        {
-            stackpanel_Window.Visibility = Visibility.Hidden;
+            UpdateScaleInfo();
         }
 
         private void ZoomImage(int delta)
@@ -490,6 +483,14 @@ namespace DicomViewCtrl
             this.rightTopAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
             this.leftBottomAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
             this.rightBottomAnnList.Visibility = isShow ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public void SetAnnotationDescriptionVisibility(bool isShow)
+        {
+            this.leftTopAnnList.ShowDescription = isShow;
+            this.rightTopAnnList.ShowDescription = isShow;
+            this.leftBottomAnnList.ShowDescription = isShow;
+            this.rightBottomAnnList.ShowDescription = isShow;
         }
 
         private void FillDicomTagsValue(ObservableCollection<DicomTagWithValue> dicomTagWithValues)
@@ -713,8 +714,7 @@ namespace DicomViewCtrl
             var point = GetCurrentPoint(current);
             var value = GetPointValue(point);
 
-            this.lbl_WL.Content = point.X.ToString();
-            this.lbl_WW.Content = point.Y.ToString();
+            this.lbl_Value.Content = $"X:{point.X} Y:{point.Y} Value:{value}";
         }
 
         private Point GetCurrentPoint(Point current)
@@ -769,6 +769,53 @@ namespace DicomViewCtrl
         private void AnnList_AnnotationChanged(object sender, Controls.EventArgs.AnnotationControlEventArgs e)
         {
             ReadDicomTagValue(e.DicomTagWithValue);
+        }
+
+        private void UpdateStandAloneInfoPos()
+        {
+            Canvas.SetLeft(this.stackpanel_SpecialInfo, 0);
+            Canvas.SetBottom(this.stackpanel_SpecialInfo, this.canvas.ActualHeight / 2 -50);
+        }
+
+        private void UpdateScaleInfo()
+        {
+            this.lbl_Scale.Content = $"Scale:{this.scaleTransform.ScaleX.ToString("0.0")}";
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateStandAloneInfoPos();
+
+            if (this.HasImage)
+            {
+                AutoPos();
+            }
+        }
+
+        private void scaleTransform_Changed(object sender, EventArgs e)
+        {
+            UpdateScaleInfo();
+        }
+
+        private void UpdateDicomTagValue(DicomTagWithValue dicomTagWithValue,object value)
+        {
+            var findTag = this.DicomTags.FirstOrDefault(x => x.GetHashCode() == dicomTagWithValue.GetHashCode());
+
+            if(findTag is not null)
+            {
+                findTag.Value = value;
+            }
+            else
+            {
+                this.DicomTags.Add(new DicomTagWithValue(dicomTagWithValue.Group, 
+                    dicomTagWithValue.Element, 
+                    dicomTagWithValue.Description, 
+                    value));
+            }
+
+            //TODO
+            //temporarily refresh all
+            LoadAnnotation();
         }
     }
 }

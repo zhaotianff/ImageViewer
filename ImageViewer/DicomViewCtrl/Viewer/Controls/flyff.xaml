@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:DicomViewCtrl.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" SizeChanged="UserControl_SizeChanged">
     <Canvas Background="Black" MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove" 
           MouseRightButtonDown="Canvas_MouseRightButtonDown" MouseRightButtonUp="Canvas_MouseRightButtonUp" 
             MouseLeftButtonDown="canvas_MouseLeftButtonDown" MouseLeftButtonUp="canvas_MouseLeftButtonUp"
@@ -13,15 +13,15 @@
         <Image x:Name="image">
             <Image.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform CenterX="0" CenterY="0" x:Name="scaleTransform"></ScaleTransform>
+                    <ScaleTransform CenterX="0" CenterY="0" x:Name="scaleTransform" Changed="scaleTransform_Changed"></ScaleTransform>
                     <RotateTransform Angle="0" x:Name="rotateTransform" />
                     <TranslateTransform X="0" Y="0" x:Name="translateTransform" />
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="stackpanel_Window">
-            <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WL"></Label>
-            <Label  Foreground="Green" Margin="3" FontSize="20" Name="lbl_WW"></Label>
+        <StackPanel Name="stackpanel_SpecialInfo">
+            <Label Foreground="White" FontSize="12" Name="lbl_Value"></Label>
+            <Label Foreground="White" FontSize="12" Name="lbl_Scale" Margin="0,-8,0,0"></Label>
         </StackPanel>
         <controls:AnnotationControl Position="LeftTop" x:Name="leftTopAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
         <controls:AnnotationControl Position="RightTop" x:Name="rightTopAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>

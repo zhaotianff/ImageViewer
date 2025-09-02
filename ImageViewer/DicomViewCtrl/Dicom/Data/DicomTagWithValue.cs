@@ -46,6 +46,11 @@ namespace DicomViewCtrl.Dicom.Data
             this.Description = description;
         }
 
+        public DicomTagWithValue(ushort group,ushort element,string description,object value) : this(group,element,description)
+        {
+            this.Value = value;
+        }
+
         public DicomTagWithValue()
         {
 
@@ -58,31 +63,15 @@ namespace DicomViewCtrl.Dicom.Data
 
         public bool Equals(DicomTagWithValue other)
         {
+            if (other == null)
+                return false;
+
             return this.Group == other.Group && this.Element == other.Element;
-        }
-
-        public static bool operator ==(DicomTagWithValue value1,DicomTagWithValue value2)
-        {
-            return value1.Group == value2.Group && value1.Element == value2.Element;
-        }
-
-        public static bool operator !=(DicomTagWithValue value1, DicomTagWithValue value2)
-        {
-            return value1.Group != value2.Group || value1.Element != value2.Element;
         }
 
         public override int GetHashCode()
         {
             return (Group,Element).GetHashCode();
         }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is DicomTagWithValue dicomTagWithValue)
-                return Equals(dicomTagWithValue);
-
-            return base.Equals(obj);
-        }
-
     }
 }

@@ -59,6 +59,8 @@ namespace ImageViewer
                 annotationConfig.RightTop, 
                 annotationConfig.LeftBottom, 
                 annotationConfig.RightBottom);
+            this.imgview.SetAnnotationDescriptionVisibility(ConfigurationManager.Instance.
+                AnnotationConfiguration.IsShowDescription);
         }
 
         private void InitializeToolBar()
@@ -368,6 +370,13 @@ namespace ImageViewer
         {
             DicomAnnotationWindow dicomAnnotationWindow = new DicomAnnotationWindow();
             dicomAnnotationWindow.ShowDialog();
+            RefreshDicomAnnotationConfig();
+        }
+
+        private void RefreshDicomAnnotationConfig()
+        {
+            this.imgview.SetAnnotationDescriptionVisibility(ConfigurationManager.Instance.
+                AnnotationConfiguration.IsShowDescription);
         }
     }
 }
