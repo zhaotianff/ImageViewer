@@ -169,6 +169,18 @@ namespace DicomViewCtrl.Util
             return true;
         }
 
+        public static bool CopyUshortArrayToByteArray(ushort[] srcData, byte[] dstData)
+        {
+            for (int i = 0; i < srcData.Length; i++)
+            {
+                byte[] invertedBytes = BitConverter.GetBytes(srcData[i]);
+
+                dstData[i * 2] = invertedBytes[0];
+                dstData[(i * 2) + 1] = invertedBytes[1];
+            }
+            return true;
+        }
+
         public static ImageSource GetImageSource(WriteableBitmap writeableBitmap)
         {
             TransformedBitmap bitmap = new TransformedBitmap();

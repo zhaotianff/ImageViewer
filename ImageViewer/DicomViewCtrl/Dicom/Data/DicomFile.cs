@@ -313,6 +313,10 @@ namespace DicomViewCtrl.Dicom.Data
             this.WindowCenter = windowLevel;
         }
 
+        public void InvertImage()
+        {
+            DicomImageProcessor.Invert(this);
+        }
 
         public void ManualUpdateThumbnail()
         {

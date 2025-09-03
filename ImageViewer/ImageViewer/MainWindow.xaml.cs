@@ -378,5 +378,15 @@ namespace ImageViewer
             this.imgview.SetAnnotationDescriptionVisibility(ConfigurationManager.Instance.
                 AnnotationConfiguration.IsShowDescription);
         }
+
+        private void btn_Invert_Click(object sender, RoutedEventArgs e)
+        {
+            this.imgview.Invert();
+        }
+
+        private void btn_Magnifier_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -37,6 +37,18 @@ namespace DicomViewCtrl.Dicom.Process
             }
         }
 
+        public static void Invert(DicomFile dicomFile)
+        {
+            if (dicomFile.BitsStored == 8)
+            {
+                InternalInvert8BitsImage(dicomFile);
+            }
+            else
+            {
+                InternalInvert16BitsImage(dicomFile);
+            }
+        }
+
         private static (double, double) GetAutoWindow8Bit(DicomFile dicomFile)
         {
             var orderBuffer = dicomFile.ImageData.OrderBy(x => x).Select(x => (byte)(x * dicomFile.RescaleSlope + dicomFile.RescaleIntercept)).ToArray();
@@ -208,6 +220,47 @@ namespace DicomViewCtrl.Dicom.Process
                 dicomFile.Columns * 2,
                 0
             );
+        }
+
+        private static void InternalInvert8BitsImage(DicomFile dicomFile)
+        {
+            var max = (byte)((1 << dicomFile.BitsStored) - 1);
+
+            for (int i = 0; i < dicomFile.ImageData.Length; i++)
+            {
+                //not required
+                //read from fo-dicom
+                //byte value = (byte)(dicomFile.ImageData[i] * dicomFile.RescaleSlope + dicomFile.RescaleIntercept);
+                dicomFile.ImageData[i] = (byte)(max - dicomFile.ImageData[i]);
+            }
+
+            dicomFile.PreviewImage.WritePixels(
+                new Int32Rect(0, 0, dicomFile.Columns, dicomFile.Rows),
+                dicomFile.ImageData,
+                dicomFile.Columns,
+                0
+            );
+        }
+
+        private static void InternalInvert16BitsImage(DicomFile dicomFile)
+        {
+            var max = (1 << dicomFile.BitsStored) - 1;
+            ushort[] target16BitUshortArray = new ushort[dicomFile.ImageData.Length / 2];
+            ConvertUtil.CopyByteArrayToUshortArray(dicomFile.ImageData, target16BitUshortArray);
+
+            for (int i = 0; i < target16BitUshortArray.Length; i++)
+            {
+                target16BitUshortArray[i] = (ushort)(max - target16BitUshortArray[i]);
+            }
+
+            dicomFile.PreviewImage.WritePixels(
+                new Int32Rect(0, 0, dicomFile.Columns, dicomFile.Rows),
+                target16BitUshortArray,
+                dicomFile.Columns * 2,
+                0
+            );
+
+            ConvertUtil.CopyUshortArrayToByteArray(target16BitUshortArray, dicomFile.ImageData);
         }
     }
 }

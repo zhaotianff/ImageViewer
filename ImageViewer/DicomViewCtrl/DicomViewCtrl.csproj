@@ -171,6 +171,7 @@
     <Compile Include="Viewer\Data\ProcType.cs" />
     <Compile Include="Viewer\Event\FrameChangedEvent.cs" />
     <Compile Include="Viewer\Event\FrameChangedEventArgs.cs" />
+    <Compile Include="Viewer\Interface\IImageViewer.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

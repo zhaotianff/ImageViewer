@@ -40,6 +40,8 @@
             </GroupBox>
             <GroupBox Header="查看" Foreground="White" BorderThickness="0,0,0.5,0">
                 <DockPanel>
+                    <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconMagnifier}" ToolTip="Magnifier" x:Name="btn_Magnifier" Click="btn_Magnifier_Click"></localcontrols:ImageButton>
+                    <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconInvert}" ToolTip="Invert" x:Name="btn_Invert" Click="btn_Invert_Click"></localcontrols:ImageButton>
                     <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconDicomTag}" ToolTip="Dicom Tags" x:Name="btn_DicomTags" Click="btn_DicomTags_Click"></localcontrols:ImageButton>
                     <localcontrols:ImageButton Width="40" Height="40" VerticalAlignment="Center" Content="{DynamicResource IconAnnotation}" ToolTip="Annotation" x:Name="btn_Annotation" Click="btn_Annotation_Click"></localcontrols:ImageButton>
                 </DockPanel>

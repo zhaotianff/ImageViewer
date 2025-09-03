@@ -817,5 +817,11 @@ namespace DicomViewCtrl
             //temporarily refresh all
             LoadAnnotation();
         }
+
+        public void Invert()
+        {
+            this.dicomFile.InvertImage();
+            this.SetWindow(0, 0);
+        }
     }
 }
