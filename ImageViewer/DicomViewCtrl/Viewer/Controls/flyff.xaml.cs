@@ -267,6 +267,14 @@ namespace DicomViewCtrl
             }
         }
 
+        public void SetAutoWindow()
+        {
+            if (this.HasImage == false)
+                return;
+
+            this.SetWindow(0, 0);
+        }
+
         public void SetWindow(double ww,double wl)
         {
             this.dicomFile.UpdateWindowWidthAndLevel(ref ww, ref wl);
@@ -845,11 +853,14 @@ namespace DicomViewCtrl
 
         public void Invert()
         {
+            if (this.HasImage == false)
+                return;
+
             this.dicomFile.InvertImage();
             this.SetWindow(0, 0);
         }
 
-        public void Magnifier(Point center)
+        private void Magnifier(Point center)
         {
             center = UpdateMagnifierCirclePos(center);
 
@@ -871,6 +882,19 @@ namespace DicomViewCtrl
             magnifierCircle.SetValue(Canvas.TopProperty, center.Y - magnifierCircle.Height / 2);
 
             return center;
+        }
+
+        public void Fts()
+        {
+            this.AutoFit();
+        }
+
+        public void RealSize()
+        {
+            this.scaleTransform.ScaleX = 1;
+            this.scaleTransform.ScaleY = 1;
+
+            this.AutoPos();
         }
     }
 }

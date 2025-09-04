@@ -80,6 +80,14 @@ namespace ImageViewer
             };
             this.btn_MouseLeftButton.DropdownButtons = mouseLeftButtonList;
             this.btn_MouseLeftButton.SelectDropDownListItem(0);
+
+            List<DropDownButtonData> imageSizeList = new List<DropDownButtonData>()
+            {
+                new DropDownButtonData(){DisplayName = "自适应大小",Handler = x=>{this.imgview.Fts();  },IconName = "IconFitSize" },
+                new DropDownButtonData(){DisplayName = "原始大小",Handler = x=>{this.imgview.RealSize();  },IconName = "IconRealSize" }
+            };
+            this.btn_ImageSize.DropdownButtons = imageSizeList;
+            this.btn_ImageSize.SelectDropDownListItem(0);
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -363,7 +371,7 @@ namespace ImageViewer
 
         private void btn_AutoWindow_Click(object sender, RoutedEventArgs e)
         {
-            this.imgview.SetWindow(0, 0);
+            this.imgview.SetAutoWindow();
         }
 
         private void btn_Annotation_Click(object sender, RoutedEventArgs e)

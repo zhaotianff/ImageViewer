@@ -44,5 +44,9 @@ namespace DicomViewCtrl.Viewer.Interface
         void SetMouseLeftButtonMode(MouseLeftButtonMode mouseLeftButtonMode);
 
         void Invert();
+
+        void Fts();
+
+        void RealSize();
     }
 }
