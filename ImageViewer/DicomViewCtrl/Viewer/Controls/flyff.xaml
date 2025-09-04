@@ -27,5 +27,11 @@
         <controls:AnnotationControl Position="RightTop" x:Name="rightTopAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
         <controls:AnnotationControl Position="LeftBottom" x:Name="leftBottomAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
         <controls:AnnotationControl Position="RightBottom" x:Name="rightBottomAnnList" Visibility="Collapsed" AnnotationChanged="AnnList_AnnotationChanged"></controls:AnnotationControl>
+
+        <Ellipse Stroke="White" Name="magnifierCircle" Height="200" Width="200" Visibility="Collapsed">
+            <Ellipse.Fill>
+                <VisualBrush x:Name="magnifierBrush" Visual="{Binding ElementName=image}" ViewboxUnits="Absolute"/>
+            </Ellipse.Fill>
+        </Ellipse>
     </Canvas>
 </UserControl>

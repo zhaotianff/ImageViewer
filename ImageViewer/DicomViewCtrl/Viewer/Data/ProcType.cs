@@ -11,6 +11,7 @@ namespace DicomViewCtrl.Viewer.Data
         None,
         MoveImage,
         ZoomImage,
-        SetWL
+        SetWL,
+        Magnifier
     }
 }

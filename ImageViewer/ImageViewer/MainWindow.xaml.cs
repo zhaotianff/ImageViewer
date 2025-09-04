@@ -386,7 +386,7 @@ namespace ImageViewer
 
         private void btn_Magnifier_Click(object sender, RoutedEventArgs e)
         {
-
+            this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Magnifier);
         }
     }
 }

@@ -432,6 +432,9 @@ namespace DicomViewCtrl
                 case ProcType.SetWL:
                     SetImageWL(e.GetPosition(this.canvas));
                     break;
+                case ProcType.Magnifier:
+                    Magnifier(e.GetPosition(this.image));
+                    break;
                 default:
                     break;
             }
@@ -555,7 +558,19 @@ namespace DicomViewCtrl
                 case MouseLeftButtonMode.SetWL:
                     CaptureMouseSetWL(e);
                     break;
+                case MouseLeftButtonMode.Magnifier:
+                    CaptureMouseMagnifier(e);
+                    break;
             }
+        }
+
+        private void CaptureMouseMagnifier(MouseButtonEventArgs e)
+        {
+            UpdateMagnifierCirclePos(e.GetPosition(this.image));
+
+            this.magnifierCircle.Visibility = Visibility.Visible;
+            procType = ProcType.Magnifier;
+            this.Cursor = Cursors.Cross;
         }
 
         private void CaptureMouseMove(MouseButtonEventArgs e)
@@ -591,7 +606,17 @@ namespace DicomViewCtrl
                 case MouseLeftButtonMode.SetWL:
                     ReleaseMouseSetWLCapture();
                     break;
+                case MouseLeftButtonMode.Magnifier:
+                    ReleaseMouseMagnifierCapture();
+                    break;
             }
+        }
+
+        private void ReleaseMouseMagnifierCapture()
+        {
+            procType = ProcType.None;
+            this.Cursor = Cursors.Arrow;
+            this.magnifierCircle.Visibility = Visibility.Collapsed;
         }
 
         private void ReleaseMouseMoveCapture()
@@ -822,6 +847,30 @@ namespace DicomViewCtrl
         {
             this.dicomFile.InvertImage();
             this.SetWindow(0, 0);
+        }
+
+        public void Magnifier(Point center)
+        {
+            center = UpdateMagnifierCirclePos(center);
+
+            double length = magnifierCircle.ActualWidth * 0.5; // 放大倍数
+            double radius = length / 2;
+            var viewboxRect = new Rect(center.X - radius, center.Y - radius, length, length);
+            magnifierBrush.Viewbox = viewboxRect;
+        }
+
+        private Point UpdateMagnifierCirclePos(Point center)
+        {
+            center.X *= this.scaleTransform.ScaleX;
+            center.Y *= this.scaleTransform.ScaleY;
+
+            center.X += this.translateTransform.X;
+            center.Y += this.translateTransform.Y;
+
+            magnifierCircle.SetValue(Canvas.LeftProperty, center.X - magnifierCircle.Width / 2);
+            magnifierCircle.SetValue(Canvas.TopProperty, center.Y - magnifierCircle.Height / 2);
+
+            return center;
         }
     }
 }
