@@ -67,27 +67,92 @@ namespace ImageViewer
         {
             List<DropDownButtonData> mouseWheelButtonList = new List<DropDownButtonData>()
             {
-                new DropDownButtonData(){DisplayName = "切换帧",Handler = x=>{this.imgview.SetMouseWheelMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.SwitchFrame);  },IconName = "IconMouseWheel" },
-                new DropDownButtonData(){DisplayName = "缩放",Handler = x=>{this.imgview.SetMouseWheelMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.Zoom);  },IconName = "IconZoom" }
+                new DropDownButtonData(){DisplayName = "切换帧",Handler = x=>{ SetImageViewWheelButtonMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.SwitchFrame);  },IconName = "IconMouseWheel" },
+                new DropDownButtonData(){DisplayName = "缩放",Handler = x=>{SetImageViewWheelButtonMode(DicomViewCtrl.Viewer.Data.MouseWheelMode.Zoom);  },IconName = "IconZoom" }
             };
             this.btn_MouseWheel.DropdownButtons = mouseWheelButtonList;
             this.btn_MouseWheel.SelectDropDownListItem(0);
 
             List<DropDownButtonData> mouseLeftButtonList = new List<DropDownButtonData>()
             {
-                 new DropDownButtonData(){DisplayName = "移动",Handler = x=>{this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Move);  },IconName = "IconHand" },
-                new DropDownButtonData(){DisplayName = "窗宽窗位",Handler = x=>{this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.SetWL);  },IconName = "IconWL" }
+                 new DropDownButtonData(){DisplayName = "移动",Handler = x=>{SetImageViewLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Move);  },IconName = "IconHand" },
+                new DropDownButtonData(){DisplayName = "窗宽窗位",Handler = x=>{SetImageViewLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.SetWL);  },IconName = "IconWL" }
             };
             this.btn_MouseLeftButton.DropdownButtons = mouseLeftButtonList;
             this.btn_MouseLeftButton.SelectDropDownListItem(0);
 
             List<DropDownButtonData> imageSizeList = new List<DropDownButtonData>()
             {
-                new DropDownButtonData(){DisplayName = "自适应大小",Handler = x=>{this.imgview.Fts();  },IconName = "IconFitSize" },
-                new DropDownButtonData(){DisplayName = "原始大小",Handler = x=>{this.imgview.RealSize();  },IconName = "IconRealSize" }
+                new DropDownButtonData(){DisplayName = "自适应大小",Handler = x=>{ShowImageFitSize();  },IconName = "IconFitSize" },
+                new DropDownButtonData(){DisplayName = "原始大小",Handler = x=>{ShowImageRealSize(); },IconName = "IconRealSize" }
             };
             this.btn_ImageSize.DropdownButtons = imageSizeList;
             this.btn_ImageSize.SelectDropDownListItem(0);
+
+            List<DropDownButtonData> imageRotateList = new List<DropDownButtonData>()
+            {
+                new DropDownButtonData(){DisplayName = "顺时针90°",Handler = x=>{RotateRight();  },IconName = "IconRotateRight" },
+                new DropDownButtonData(){DisplayName = "逆时针90°",Handler = x=>{RotateLeft(); },IconName = "IconRotateLeft" },
+                new DropDownButtonData(){DisplayName = "水平翻转",Handler = x=>{FlipHorizontally (); },IconName = "IconHorizontalFlip" },
+                new DropDownButtonData(){DisplayName = "垂直翻转",Handler = x=>{FlipVertically(); },IconName = "IconVerticalFlip" }
+            };
+            this.btn_ImageRotate.DropdownButtons = imageRotateList;
+            this.btn_ImageRotate.SelectDropDownListItemWithoutEvent(0);
+        }
+
+        private void SetImageViewWheelButtonMode(DicomViewCtrl.Viewer.Data.MouseWheelMode mode)
+        {
+            if (this.imgview.HasImage == false)
+                return;
+
+            this.imgview.SetMouseWheelMode(mode);
+        }
+
+        private void SetImageViewLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode mode)
+        {
+            if (this.imgview.HasImage == false)
+                return;
+
+            this.imgview.SetMouseLeftButtonMode(mode);
+        }
+
+        private void ShowImageFitSize()
+        {
+            if (this.imgview.HasImage == false)
+                return;
+
+            this.imgview.Fts();
+        }
+
+        private void ShowImageRealSize()
+        {
+            if (this.imgview.HasImage == false)
+                return;
+
+            this.imgview.RealSize();
+        }
+
+        private void RotateRight()
+        {
+            if (this.imgview.HasImage == false)
+                return;
+
+            this.imgview.RotateRight();
+        }
+
+        private void RotateLeft()
+        {
+
+        }
+
+        private void FlipHorizontally()
+        {
+
+        }
+
+        private void FlipVertically()
+        {
+
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -110,6 +175,16 @@ namespace ImageViewer
         {
             imgview.OpenImage(fileName);
             SelectLastItem();
+            this.btn_MouseLeftButton.SelectDropDownListItem(0);
+
+            if(this.imgview.DicomInfo.NumberOfFrames > 1)
+            {
+                this.btn_MouseWheel.SelectDropDownListItem(0);
+            }
+            else
+            {
+                this.btn_MouseWheel.SelectDropDownListItem(1);
+            }
         }
 
         private void SelectLastItem()
@@ -371,6 +446,9 @@ namespace ImageViewer
 
         private void btn_AutoWindow_Click(object sender, RoutedEventArgs e)
         {
+            if (this.imgview.HasImage == false)
+                return;
+
             this.imgview.SetAutoWindow();
         }
 
@@ -389,11 +467,17 @@ namespace ImageViewer
 
         private void btn_Invert_Click(object sender, RoutedEventArgs e)
         {
+            if (this.imgview.HasImage == false)
+                return;
+
             this.imgview.Invert();
         }
 
         private void btn_Magnifier_Click(object sender, RoutedEventArgs e)
         {
+            if (this.imgview.HasImage == false)
+                return;
+
             this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Magnifier);
         }
     }

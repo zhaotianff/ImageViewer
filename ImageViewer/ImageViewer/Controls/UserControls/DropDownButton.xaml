@@ -13,7 +13,7 @@
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
-        <localcontrols:ImageButton Width="40" Height="40" Content="{DynamicResource IconHand}" IsEnabled="True" x:Name="btn_DropDown"></localcontrols:ImageButton>
+        <localcontrols:ImageButton Width="40" Height="40" Content="{DynamicResource IconHand}" IsEnabled="True" x:Name="btn_DropDown" Click="btn_DropDown_Click"></localcontrols:ImageButton>
 
         <localcontrols:ImageButton Width="20" Height="40" Grid.Column="1" Click="btn_Drop_Click">
             <localcontrols:ImageButton.Content>

@@ -8,6 +8,7 @@ namespace DicomViewCtrl.Viewer.Data
 {
     public enum MouseWheelMode
     {
+        None,
         SwitchFrame,
         Zoom
     }

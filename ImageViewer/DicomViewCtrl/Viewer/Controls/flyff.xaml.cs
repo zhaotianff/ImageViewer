@@ -40,18 +40,28 @@ namespace DicomViewCtrl
         private Point startWLPoint;
         private ProcType procType = ProcType.None;
         private Dicom.Data.DicomFile dicomFile;
-        private MouseWheelMode mouseWheelMode = MouseWheelMode.SwitchFrame;
-        private MouseLeftButtonMode mouseLeftButtonMode = MouseLeftButtonMode.Move;
+        private MouseWheelMode mouseWheelMode = MouseWheelMode.None;
+        private MouseLeftButtonMode mouseLeftButtonMode = MouseLeftButtonMode.None;
         private int frameImageIndex = -1;
 
         public ObservableCollection<DicomImage> ImageList { get; private set; } = new ObservableCollection<DicomImage>();
 
-        private ObservableCollection<DicomTagWithValue> dicomTags;
+        private DicomInfo dicomInfo;
+        
+        public DicomInfo DicomInfo 
+        {
+            get
+            {
+                if(dicomInfo == null)
+                {
+                    dicomInfo = new DicomInfo(this.DicomTags);
+                }
 
-        /// <summary>
-        /// Occurs when frame changed(mouse wheel scroll)
-        /// </summary>
-        public event Viewer.Event.FrameChangedEvent.FrameChangedEventHandler OnFrameChanged;
+                return dicomInfo;
+            }
+        }
+
+        private ObservableCollection<DicomTagWithValue> dicomTags;
 
         public ObservableCollection<DicomTagWithValue> DicomTags
         {
@@ -100,6 +110,12 @@ namespace DicomViewCtrl
             }
         }
 
+        /// <summary>
+        /// Occurs when frame changed(mouse wheel scroll)
+        /// </summary>
+        public event Viewer.Event.FrameChangedEvent.FrameChangedEventHandler OnFrameChanged;
+
+
         public flyff()
         {
             InitializeComponent();
@@ -140,6 +156,8 @@ namespace DicomViewCtrl
                 dicomTags.Clear();
                 dicomTags = null;
             }
+
+            this.dicomInfo = null;
         }
 
         public bool FetchFrame(int imageIndex,int frameIndex)
@@ -269,9 +287,7 @@ namespace DicomViewCtrl
 
         public void SetAutoWindow()
         {
-            if (this.HasImage == false)
-                return;
-
+            CheckImageOpenStatus();
             this.SetWindow(0, 0);
         }
 
@@ -422,6 +438,8 @@ namespace DicomViewCtrl
                 case MouseWheelMode.Zoom:
                     ZoomImage(e.Delta);
                     break;
+                case MouseWheelMode.None:
+                    break;
                 default:
                     break;
             }
@@ -569,6 +587,8 @@ namespace DicomViewCtrl
                 case MouseLeftButtonMode.Magnifier:
                     CaptureMouseMagnifier(e);
                     break;
+                case MouseLeftButtonMode.None:
+                    break;
             }
         }
 
@@ -616,6 +636,8 @@ namespace DicomViewCtrl
                     break;
                 case MouseLeftButtonMode.Magnifier:
                     ReleaseMouseMagnifierCapture();
+                    break;
+                case MouseLeftButtonMode.None:
                     break;
             }
         }
@@ -853,9 +875,7 @@ namespace DicomViewCtrl
 
         public void Invert()
         {
-            if (this.HasImage == false)
-                return;
-
+            CheckImageOpenStatus();
             this.dicomFile.InvertImage();
             this.SetWindow(0, 0);
         }
@@ -886,13 +906,26 @@ namespace DicomViewCtrl
 
         public void Fts()
         {
+            CheckImageOpenStatus();
             this.AutoFit();
         }
 
         public void RealSize()
         {
+            CheckImageOpenStatus();
+
             this.scaleTransform.ScaleX = 1;
             this.scaleTransform.ScaleY = 1;
+
+            this.AutoPos();
+        }
+
+        public void RotateRight()
+        {
+            CheckImageOpenStatus();
+            this.rotateTransform.CenterX = (this.dicomFile.Columns * this.scaleTransform.ScaleX )/2;
+            this.rotateTransform.CenterY = (this.dicomFile.Rows * this.scaleTransform.ScaleY) / 2;
+            this.rotateTransform.Angle += 90;
 
             this.AutoPos();
         }

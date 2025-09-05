@@ -20,6 +20,10 @@ namespace ImageViewer.Controls.UserControls
     /// </summary>
     public partial class DropDownButton : UserControl
     {
+        private int selectedIndex = -1;
+
+        public int SelectedIndex => selectedIndex;
+
         private List<DropDownButtonData> dropdownButtons = new List<DropDownButtonData>();
 
         public List<DropDownButtonData> DropdownButtons
@@ -54,6 +58,13 @@ namespace ImageViewer.Controls.UserControls
 
         public void SelectDropDownListItem(int index)
         {
+            SelectDropDownListItemWithoutEvent(index);
+            dropdownButtons[index].Handler?.Invoke(this);
+        }
+
+        public void SelectDropDownListItemWithoutEvent(int index)
+        {
+            selectedIndex = index;
             var dropDownButtonData = this.DropdownButtons[index];
             this.btn_DropDown.Content = Application.Current.FindResource(dropDownButtonData.IconName);
             this.popup.IsOpen = false;
@@ -67,6 +78,14 @@ namespace ImageViewer.Controls.UserControls
         private void btn_Drop_Click(object sender, RoutedEventArgs e)
         {
             this.popup.IsOpen = !this.popup.IsOpen;
+        }
+
+        private void btn_DropDown_Click(object sender, RoutedEventArgs e)
+        {
+            if(selectedIndex < this.dropdownButtons.Count)
+            {
+                this.dropdownButtons[selectedIndex].Handler?.Invoke(this);
+            }
         }
     }
 }

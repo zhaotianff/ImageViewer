@@ -8,6 +8,7 @@ namespace DicomViewCtrl.Viewer.Data
 {
     public enum MouseLeftButtonMode
     {
+        None,
         Move,
         SetWL,
         Magnifier
