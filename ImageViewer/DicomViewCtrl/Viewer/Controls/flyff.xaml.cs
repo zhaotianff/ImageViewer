@@ -913,38 +913,18 @@ namespace DicomViewCtrl
 
         private void Magnifier(Point center)
         {
-            center = UpdateMagnifierCirclePos(center);
-
+            UpdateMagnifierCirclePos(center);
             double length = magnifierCircle.ActualWidth * 0.5; // 放大倍数
             double radius = length / 2;
             var viewboxRect = new Rect(center.X - radius, center.Y - radius, length, length);
             magnifierBrush.Viewbox = viewboxRect;
         }
 
-        private Point UpdateMagnifierCirclePos(Point center)
+        private void UpdateMagnifierCirclePos(Point center)
         {
-            //center.X *= this.scaleTransform.ScaleX;
-            //center.Y *= this.scaleTransform.ScaleY;
-
-            //center.X += this.translateTransform.X;
-            //center.Y += this.translateTransform.Y;
-
-            //magnifierCircle.SetValue(Canvas.LeftProperty, center.X - magnifierCircle.Width / 2);
-            //magnifierCircle.SetValue(Canvas.TopProperty, center.Y - magnifierCircle.Height / 2);
-
-            // Convert that point into 'outer' coordinates (after scale/translate/rotate)
             Point posInOuter = canvas.TransformToAncestor(outer).Transform(center);
-
-            // Position the magnifier at this transformed point
             Canvas.SetLeft(magnifierCircle, posInOuter.X - magnifierCircle.Width / 2);
             Canvas.SetTop(magnifierCircle, posInOuter.Y - magnifierCircle.Height / 2);
-
-            //magnifierCircle locate by outer,so need translateTransform offset
-            //image magnifier not need to to do this, it depend on itself.
-            //center.X -= this.translateTransform.X;
-            //center.Y -= this.translateTransform.Y;
-
-            return center;
         }
 
         public void Fts()

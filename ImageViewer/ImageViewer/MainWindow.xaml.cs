@@ -489,5 +489,15 @@ namespace ImageViewer
 
             this.imgview.SetMouseLeftButtonMode(DicomViewCtrl.Viewer.Data.MouseLeftButtonMode.Magnifier);
         }
+
+        private void imgview_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.grid_FrameList.Visibility = Visibility.Collapsed;
+        }
+
+        private void imgview_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            this.grid_FrameList.Visibility = Visibility.Visible;
+        }
     }
 }

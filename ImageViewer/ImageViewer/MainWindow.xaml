@@ -92,7 +92,7 @@
                     
                 </Canvas>-->
 
-                <ctrl:flyff x:Name="imgview" OnFrameChanged="imgview_OnFrameChanged"/>
+                <ctrl:flyff x:Name="imgview" OnFrameChanged="imgview_OnFrameChanged" MouseLeftButtonDown="imgview_MouseLeftButtonDown" MouseLeftButtonUp="imgview_MouseLeftButtonUp"/>
 
                 <Grid Background="Transparent" Width="500" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" MouseEnter="frameListGrid_MouseEnter" 
                       MouseLeave="frameListGrid_MouseLeave" Panel.ZIndex="2" Name="grid_FrameList">
