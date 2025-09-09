@@ -6,19 +6,34 @@
              xmlns:controls="clr-namespace:DicomViewCtrl.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" SizeChanged="UserControl_SizeChanged">
-    <Canvas Background="Black" MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove" 
-          MouseRightButtonDown="Canvas_MouseRightButtonDown" MouseRightButtonUp="Canvas_MouseRightButtonUp" 
-            MouseLeftButtonDown="canvas_MouseLeftButtonDown" MouseLeftButtonUp="canvas_MouseLeftButtonUp"
-          ClipToBounds="True" Name="canvas">
-        <Image x:Name="image">
-            <Image.RenderTransform>
+    <Canvas x:Name="outer" Background="Black" ClipToBounds="True"
+            MouseWheel="Canvas_MouseWheel" MouseMove="Canvas_MouseMove"
+            MouseRightButtonDown="Canvas_MouseRightButtonDown" MouseRightButtonUp="Canvas_MouseRightButtonUp" 
+            MouseLeftButtonDown="canvas_MouseLeftButtonDown" MouseLeftButtonUp="canvas_MouseLeftButtonUp">
+        <Canvas RenderTransformOrigin="0.5,0.5" Name="canvas">
+            <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform CenterX="0" CenterY="0" x:Name="scaleTransform" Changed="scaleTransform_Changed"></ScaleTransform>
                     <RotateTransform Angle="0" x:Name="rotateTransform" />
                     <TranslateTransform X="0" Y="0" x:Name="translateTransform" />
                 </TransformGroup>
-            </Image.RenderTransform>
-        </Image>
+            </Canvas.RenderTransform>
+            <Image x:Name="image" Width="{Binding ElementName=canvas,Path=Width,UpdateSourceTrigger=PropertyChanged}"
+                   Height="{Binding ElementName=canvas,Path=Height,UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="0">
+               
+            </Image>
+            
+            <Canvas x:Name="overlayCanvas" IsHitTestVisible="False" 
+                    Width="{Binding ElementName=canvas,Path=Width,UpdateSourceTrigger=PropertyChanged}"
+                    Height="{Binding ElementName=canvas,Path=Height,UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1">
+                <Rectangle Stroke="Red" StrokeThickness="2"
+                       Width="100" Height="80"
+                       Canvas.Left="50" Canvas.Top="50"/>
+                <Line Stroke="Blue" StrokeThickness="2"
+                  X1="20" Y1="20" X2="200" Y2="200"/>
+            </Canvas>
+        </Canvas>
+
         <StackPanel Name="stackpanel_SpecialInfo">
             <Label Foreground="White" FontSize="12" Name="lbl_Value"></Label>
             <Label Foreground="White" FontSize="12" Name="lbl_Scale" Margin="0,-8,0,0"></Label>

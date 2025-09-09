@@ -50,7 +50,6 @@ namespace ImageViewer.Controls.UserControls
                 menuItem.Click += (sender, args) => 
                 {
                     SelectDropDownListItem(index);
-                    dropDownButtonData.Handler?.Invoke(null);
                 };
                 this.menu.Items.Add(menuItem);
             }

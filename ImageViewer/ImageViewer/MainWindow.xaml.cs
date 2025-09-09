@@ -142,17 +142,26 @@ namespace ImageViewer
 
         private void RotateLeft()
         {
+            if (this.imgview.HasImage == false)
+                return;
 
+            this.imgview.RotateLeft();
         }
 
         private void FlipHorizontally()
         {
+            if (this.imgview.HasImage == false)
+                return;
 
+            this.imgview.FlipHorizontally();
         }
 
         private void FlipVertically()
         {
+            if (this.imgview.HasImage == false)
+                return;
 
+            this.imgview.FlipVertically();
         }
 
         private void Exit(object sender, RoutedEventArgs e)
