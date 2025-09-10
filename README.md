@@ -57,6 +57,12 @@ Medical image display control,support dicom/raw image.
 * Windows Width/window Level display
 * Zoom Out/In
 
+# Todo
+* All Dicom Tag Drag/Drop
+* Common Dicom Tag(BitStored/BitAllocated)
+* Display Frame Index
+* Fit Size
+
 ## Roadmap
 * SetWindow
 * Text tool
